@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="595" pageHeight="700" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="61ca2907-9a2b-4f9a-981e-8af0efd83c65">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="152"/>
+	<parameter name="faktur" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     *,
+     service_motor.`no_faktur` AS service_motor_no_faktur,
+     detail_service.`kd_sparepart` AS detail_service_kd_sparepart,
+     detail_service.`harga` AS detail_service_harga,
+     detail_service.`jumlah` AS detail_service_jumlah,
+     detail_service.`no_faktur` AS detail_service_no_faktur,
+     detail_service.`ongkos` AS detail_service_ongkos,
+     detail_service.`subtotal` AS detail_service_subtotal,
+     service_motor.`tanggal` AS service_motor_tanggal,
+     service_motor.`kd_pelanggan` AS service_motor_kd_pelanggan,
+     service_motor.`kd_mekanik` AS service_motor_kd_mekanik,
+     service_motor.`no_polisi` AS service_motor_no_polisi,
+     service_motor.`keluhan` AS service_motor_keluhan
+FROM
+     `service_motor` service_motor,
+     `detail_service` detail_service
+WHERE
+      detail_service.`no_faktur`=$P{faktur}]]>
+	</queryString>
+	<field name="no_faktur" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tanggal" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="kd_pelanggan" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="kd_mekanik" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="no_polisi" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="keluhan" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="kd_sparepart" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="harga" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="jumlah" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ongkos" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="subtotal" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="service_motor_no_faktur" class="java.lang.String"/>
+	<field name="detail_service_kd_sparepart" class="java.lang.String"/>
+	<field name="detail_service_harga" class="java.lang.Integer"/>
+	<field name="detail_service_jumlah" class="java.lang.Integer"/>
+	<field name="detail_service_no_faktur" class="java.lang.String"/>
+	<field name="detail_service_ongkos" class="java.lang.Integer"/>
+	<field name="detail_service_subtotal" class="java.lang.Integer"/>
+	<field name="service_motor_tanggal" class="java.sql.Date"/>
+	<field name="service_motor_kd_pelanggan" class="java.lang.String"/>
+	<field name="service_motor_kd_mekanik" class="java.lang.String"/>
+	<field name="service_motor_no_polisi" class="java.lang.String"/>
+	<field name="service_motor_keluhan" class="java.lang.String"/>
+	<title>
+		<band height="94" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="91" backcolor="#CCCCFF" uuid="a9a90623-d7cc-4d6b-975f-0b4e7dcf4b8b"/>
+				<graphicElement>
+					<pen lineWidth="3.5" lineStyle="Double"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="11" y="11" width="530" height="28" uuid="c65cd1fb-0a2c-478f-ba66-605f83128424"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="22" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nota Pembayaran Service Mobil Toyota]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="11" y="39" width="530" height="24" uuid="30e7ace0-118e-43c7-9349-24ca5ae92bf0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="18" isBold="false"/>
+				</textElement>
+				<text><![CDATA[PLAZA TOYOTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="11" y="63" width="530" height="20" uuid="5c30527f-cc43-428e-8187-315a870f90f4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[Jl.Karanggan RT04 RW 07 No.85 Gunung Putri Bogor 16960]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="59" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement x="0" y="7" width="555" height="47" backcolor="#E5E5E5" uuid="242dff22-a2b4-4551-b410-1a0ad7993859"/>
+				<graphicElement>
+					<pen lineWidth="3.0" lineStyle="Double"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="11" y="17" width="146" height="29" uuid="aa651ada-4c9d-4c05-a5d0-67f906fa56ce"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[No Faktur  :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="171" y="17" width="148" height="29" uuid="f94459e3-5b4f-40e5-a557-6db0ef0d9273"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="18" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{faktur}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="319" y="17" width="222" height="29" uuid="1b7296c7-786e-4a79-8be7-b76dadcbfbb1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="17" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{service_motor_tanggal}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="349" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="5" width="555" height="339" backcolor="#F3F3F3" uuid="88be1aca-3d69-4e09-9e50-bbb6c01a2467"/>
+				<graphicElement>
+					<pen lineWidth="3.0" lineStyle="Double"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="11" y="15" width="146" height="24" uuid="3ada8cfd-4ef4-45fb-b891-4db7eb2e29b7"/>
+				<textElement textAlignment="Right">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Kode Pelanggan  :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="11" y="39" width="146" height="22" uuid="702663eb-e827-4ff6-a947-50357ceed96a"/>
+				<textElement textAlignment="Right">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Kode Mekanik  :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="11" y="61" width="146" height="22" uuid="efb6b04c-f7cd-4265-96e4-72a45f315dd8"/>
+				<textElement textAlignment="Right">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[No Polisi  :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="171" y="19" width="246" height="20" uuid="53da8930-cc46-4a33-ba00-95be97c30cf0"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{service_motor_kd_pelanggan}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="171" y="41" width="246" height="20" uuid="f103f9dc-9ca8-4ef8-87d4-c294b0d87f88"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{service_motor_kd_mekanik}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="171" y="63" width="246" height="20" uuid="0d20ab35-a18e-48ad-8ec3-60e9e484d447"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{service_motor_no_polisi}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="11" y="83" width="146" height="22" uuid="d511cffc-7a4b-433b-b068-5501f1df4c69"/>
+				<textElement textAlignment="Right">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[keluhan  :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="171" y="83" width="370" height="20" uuid="56b9ba6a-106b-463e-b60c-70f46f53dd9d"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{service_motor_keluhan}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="11" y="112" width="530" height="1" uuid="da1a9e54-4a93-444c-9381-a0e8db063e3f"/>
+				<graphicElement>
+					<pen lineWidth="3.0" lineStyle="Double"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="11" y="123" width="107" height="22" uuid="8e0c0e0b-70ee-42a0-8c1f-773747158453"/>
+				<textElement textAlignment="Right">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Kode Sperpart]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="118" y="123" width="107" height="22" uuid="de00166f-27a3-4e72-88b4-ee179dc4c978"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Harga]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="225" y="123" width="107" height="22" uuid="3fcac407-6ea5-40e3-9ecc-d541221baa2c"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Jumlah]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="332" y="123" width="107" height="22" uuid="bf38946d-9945-4550-b865-5323d8e1ad95"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Biaya Pasang]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="439" y="123" width="107" height="22" uuid="1c01c019-6c1a-4711-835e-ac8e3b868755"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sub Total]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="18" y="161" width="100" height="158" uuid="13bc34a2-468a-4213-96dd-ffc511f12853"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detail_service_kd_sparepart}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="125" y="161" width="100" height="158" uuid="6c04deb7-1b23-4372-81ec-9d224361409a"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detail_service_harga}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="231" y="161" width="100" height="158" uuid="b501e441-448c-4389-8f3b-e4362ef417cf"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detail_service_jumlah}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="339" y="161" width="100" height="158" uuid="dcf9a0e0-c0f8-490a-b7e8-8ea8ceac9ede"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detail_service_ongkos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="446" y="161" width="100" height="158" uuid="94477820-2b95-4738-b956-9f53f1e895fd"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detail_service_subtotal}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="141" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="36" y="97" width="101" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="5652126f-5989-47da-a1e6-b9e38fe7d5ca"/>
+				<textElement textAlignment="Center">
+					<font fontName="Agency FB" size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Petugas/Admin]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="417" y="97" width="101" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="a5adc2d0-d4c9-4004-a8aa-248c120c4595"/>
+				<textElement textAlignment="Center">
+					<font fontName="Agency FB" size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Pelanggan]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="36" y="37" width="101" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="5614ab60-47c2-42d8-9d80-8c8c5216f29a"/>
+				<textElement textAlignment="Center">
+					<font fontName="Agency FB" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Mengetahui]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="417" y="37" width="101" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="ea8cbf2c-86fc-45db-9b1a-d6853672be09"/>
+				<textElement textAlignment="Center">
+					<font fontName="Agency FB" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Mengetahui]]></text>
+			</staticText>
+			<line>
+				<reportElement x="7" y="25" width="539" height="1" uuid="042d3440-18f1-40d8-8c0f-02ea24f2e60d"/>
+				<graphicElement>
+					<pen lineWidth="2.25" lineStyle="Double"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="7" y="127" width="539" height="1" uuid="1a29a68c-43fc-4362-bee1-51ba117f0de6"/>
+				<graphicElement>
+					<pen lineWidth="2.25" lineStyle="Double"/>
+				</graphicElement>
+			</line>
+		</band>
+	</detail>
+</jasperReport>
