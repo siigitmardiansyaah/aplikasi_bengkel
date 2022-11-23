@@ -13,6 +13,7 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 
@@ -26,7 +27,7 @@ public class MenuUtama extends javax.swing.JFrame {
     private com.mysql.jdbc.Connection Con;
     private DefaultTableModel tabmode;
     private Connection conn = new Koneksi().connect();
-
+    private String role = "";
 
 
     public MenuUtama(String Input) {
@@ -36,7 +37,16 @@ public class MenuUtama extends javax.swing.JFrame {
         setJam();
         info();
         datatable();
-        
+        String sql = "select * from login where username = '" + lbluser.getText()+"'";
+        try {
+                java.sql.Statement stat = conn.createStatement();
+                ResultSet hasil = stat.executeQuery(sql);
+                while (hasil.next()) {
+                 role = hasil.getString("Status");
+                }
+        }catch (Exception e) {
+
+        } 
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         
         setVisible(true);
@@ -49,7 +59,7 @@ int x = layar.width / 2  - this.getSize().width / 2;
 int y = layar.height / 2 - this.getSize().height / 2;
 
 this.setLocation(x, y);
-    }
+   }
 
     public final void setJam() {
         ActionListener taskPerformer = new ActionListener() {
@@ -148,6 +158,10 @@ this.setLocation(x, y);
             } catch (Exception e) {
                 
             }
+        }
+        
+        public javax.swing.JDesktopPane getDesktopPane() {
+        return dp;
         }
   
 
@@ -572,53 +586,104 @@ this.setLocation(x, y);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-
-        
-         if(dp != null) {
-            dp.removeAll();
-            dp.updateUI();
-        }
-        
-        DataUser p= new DataUser();
+    
+    
+    if(role.equals("Super User")) {
+        DataUser p = new DataUser();
         dp.add(p);
         p.setVisible(true);
+    } else {
+        JOptionPane.showMessageDialog(null,"Anda Tidak Memiliki Akses Ke Menu Ini");
+    }
+        
+        
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
         if(dp != null) {
-            dp.removeAll();
-            dp.updateUI();
+//             DataUser a = new DataUser();
+//             fmekanik b = new fmekanik();
+//             fsparepart c = new fsparepart();
+//             fpelanggan d = new fpelanggan();
+//
+//             if(dp.equals(a)) {
+//                 dp.remove(a);
+//                 dp.updateUI();
+//                 a.setVisible(false);
+//             }else if(dp.equals(b)){
+//                 dp.remove(b);
+//                 dp.updateUI();
+//                 b.setVisible(false);
+//             }else if(dp.equals(c)){
+//                 dp.remove(c);
+//                 dp.updateUI();
+//                 c.setVisible(false);
+//             } else if(dp.equals(d)){
+//                 dp.remove(d);
+//                 dp.updateUI();
+//                 d.setVisible(false);
+//             }
+//            dp.remove(dp);
+//             dp.updateUI();
         }
-        fmekanik p= new  fmekanik();
-        dp.add(p);
-        p.setVisible(true);
+        
+        if(role.equals("Admin") || role.equals("Super User")) {
+            fmekanik p= new  fmekanik();
+            dp.add(p);
+            p.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(null,"Anda Tidak Memiliki Akses Ke Menu Ini");
+        }
     }//GEN-LAST:event_jMenuItem9ActionPerformed
 
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
         
-        if(dp != null) {
-            dp.removeAll();
-            dp.updateUI();
+        if(role.equals("Gudang") || role.equals("Super User")) {
+            fsparepart p= new fsparepart();
+            dp.add(p);
+            p.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(null,"Anda Tidak Memiliki Akses Ke Menu Ini");
         }
-        fsparepart p= new fsparepart();
-        dp.add(p);
-        p.setVisible(true);
+        
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
     private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
-        if(dp != null) {
-            dp.removeAll();
-            dp.updateUI();
+        if(role.equals("Admin") || role.equals("Super User")) {
+            fpelanggan p= new fpelanggan();
+            dp.add(p);
+            p.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(null,"Anda Tidak Memiliki Akses Ke Menu Ini");
         }
-        fpelanggan p= new fpelanggan();
-        dp.add(p);
-        p.setVisible(true);
     }//GEN-LAST:event_jMenuItem10ActionPerformed
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
         if(dp != null) {
-            dp.removeAll();
-            dp.updateUI();
+//             DataUser a = new DataUser();
+//             fmekanik b = new fmekanik();
+//             fsparepart c = new fsparepart();
+//             fpelanggan d = new fpelanggan();
+//
+//             if(dp.equals(a)) {
+//                 dp.remove(a);
+//                 dp.updateUI();
+//                 a.setVisible(false);
+//             }else if(dp.equals(b)){
+//                 dp.remove(b);
+//                 dp.updateUI();
+//                 b.setVisible(false);
+//             }else if(dp.equals(c)){
+//                 dp.remove(c);
+//                 dp.updateUI();
+//                 c.setVisible(false);
+//             } else if(dp.equals(d)){
+//                 dp.remove(d);
+//                 dp.updateUI();
+//                 d.setVisible(false);
+//             }
+            dp.remove(dp);
+             dp.updateUI();
         }
         transaksi p= new transaksi();
         dp.add(p);
@@ -627,8 +692,30 @@ this.setLocation(x, y);
 
     private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
         if(dp != null) {
-            dp.removeAll();
-            dp.updateUI();
+//             DataUser a = new DataUser();
+//             fmekanik b = new fmekanik();
+//             fsparepart c = new fsparepart();
+//             fpelanggan d = new fpelanggan();
+//
+//             if(dp.equals(a)) {
+//                 dp.remove(a);
+//                 dp.updateUI();
+//                 a.setVisible(false);
+//             }else if(dp.equals(b)){
+//                 dp.remove(b);
+//                 dp.updateUI();
+//                 b.setVisible(false);
+//             }else if(dp.equals(c)){
+//                 dp.remove(c);
+//                 dp.updateUI();
+//                 c.setVisible(false);
+//             } else if(dp.equals(d)){
+//                 dp.remove(d);
+//                 dp.updateUI();
+//                 d.setVisible(false);
+//             }
+            dp.remove(dp);
+             dp.updateUI();
         }
         laporan p= new laporan();
         dp.add(p);
