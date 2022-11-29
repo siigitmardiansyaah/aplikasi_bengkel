@@ -1,4 +1,3 @@
-
 package bengkel;
 import java.awt.HeadlessException;
 import java.sql.Connection;
@@ -10,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -27,12 +27,12 @@ public class DataUser extends javax.swing.JInternalFrame {
         autoNumber();
         non_aktif();
         datatable();
-        
+        batal.setEnabled(false);
     }
     @SuppressWarnings("unchecked")
     
     private void datatable() {
-        Object[] Baris = {"ID Login", "Username", "Email", "Role"};
+        Object[] Baris = {"ID Login", "Username","Password", "Email", "Role"};
         tabmode = new DefaultTableModel(null, Baris);
         tblmekanik.setModel(tabmode);
         String sql = "select * from login";
@@ -42,9 +42,10 @@ public class DataUser extends javax.swing.JInternalFrame {
             while (hasil.next()) {
                 String id = hasil.getString("id_login");
                 String username = hasil.getString("username");
+                String password = hasil.getString("password");
                 String email = hasil.getString("email");
                 String status = hasil.getString("status");
-                String[] data = {id,username,email,status};
+                String[] data = {id,username,password,email,status};
                 tabmode.addRow(data);
             }
         } catch (Exception e) {
@@ -85,8 +86,8 @@ public class DataUser extends javax.swing.JInternalFrame {
         cmbxbox.setSelectedItem("Pilih Role");
         txemail.setText("");
         tambah.setEnabled(true);
-        update.setEnabled(false);
-        hapus.setEnabled(false);
+        update.setEnabled(true);
+        hapus.setEnabled(true);
     }
      
       private void autoNumber() {
@@ -149,6 +150,7 @@ public class DataUser extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
+        setTitle("Data User");
 
         jPanel4.setBackground(new java.awt.Color(204, 204, 204));
 
@@ -170,7 +172,7 @@ public class DataUser extends javax.swing.JInternalFrame {
         jLabel2.setFont(new java.awt.Font("Serif", 1, 14)); // NOI18N
         jLabel2.setText("USERNAME");
 
-        cmbxbox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Pilih Role", "Super User", "Admin", "Gudang" }));
+        cmbxbox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Pilih Role", "Admin", "Kasir", "Gudang" }));
 
         tambah.setFont(new java.awt.Font("Serif", 1, 11)); // NOI18N
         tambah.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/002-plus.png"))); // NOI18N
@@ -224,10 +226,7 @@ public class DataUser extends javax.swing.JInternalFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(hapus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(keluar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(batal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(update, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(keluar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
@@ -243,7 +242,10 @@ public class DataUser extends javax.swing.JInternalFrame {
                             .addComponent(txuser)
                             .addComponent(cmbxbox, 0, 210, Short.MAX_VALUE))
                         .addGap(0, 26, Short.MAX_VALUE))
-                    .addComponent(tambah, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(tambah, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(batal, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(hapus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(update, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -273,7 +275,7 @@ public class DataUser extends javax.swing.JInternalFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(1, 1, 1)
                         .addComponent(cmbxbox, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tambah)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(update)
@@ -281,9 +283,9 @@ public class DataUser extends javax.swing.JInternalFrame {
                 .addComponent(hapus)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(batal)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(keluar, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(keluar)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel2.setBackground(new java.awt.Color(204, 204, 204));
@@ -311,17 +313,16 @@ public class DataUser extends javax.swing.JInternalFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 957, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(jScrollPane2)
+                .addContainerGap())
         );
 
         btnCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/001-search.png"))); // NOI18N
@@ -358,33 +359,28 @@ public class DataUser extends javax.swing.JInternalFrame {
                     .addComponent(txtCari, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCari))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
         jPanel3.setBackground(new java.awt.Color(204, 204, 204));
 
-        jLabel4.setFont(new java.awt.Font("Serif", 1, 18)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Serif", 1, 24)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(204, 0, 0));
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setText("DATA USER");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(626, 626, 626)
-                .addComponent(jLabel4)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel4)
-                .addContainerGap(29, Short.MAX_VALUE))
+            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -397,10 +393,9 @@ public class DataUser extends javax.swing.JInternalFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -408,8 +403,12 @@ public class DataUser extends javax.swing.JInternalFrame {
 
     private void btnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCariActionPerformed
         String tombol = btnCari.getText();
+        String carii = txtCari.getText();
+        if(carii.equals("")) {
+            JOptionPane.showMessageDialog(null, "Kolom Pencarian Tidak Boleh Kosong");
+        } else {
         if (tombol.equals("Cari")){
-            Object[] Baris = {"id_login", "Usernama", "Pssword", "Email", "Status"};
+            Object[] Baris = {"id_login", "Usernama", "Password", "Email", "Status"};
             tabmode = new DefaultTableModel(null, Baris);
             tblmekanik.setModel(tabmode);
             String sql = "Select * from login where id_login like '%" + txtCari.getText() + "%'" +
@@ -417,7 +416,7 @@ public class DataUser extends javax.swing.JInternalFrame {
             try {
                 Statement stat = conn.createStatement();
                 ResultSet hasil = stat.executeQuery(sql);
-                while (hasil.next()) {
+                if (hasil.next()) {
                     String id = hasil.getString("id_login");
                     String username = hasil.getString("username");
                     String password = hasil.getString("password");
@@ -425,15 +424,40 @@ public class DataUser extends javax.swing.JInternalFrame {
                     String status = hasil.getString("status");
                     String[] data = {id,username,password,email,status};
                     tabmode.addRow(data);
+                    btnCari.setText("Batal");
+                    tambah.setEnabled(true);
+                    update.setEnabled(true);
+                    hapus.setEnabled(true);
+                    batal.setEnabled(false);
+                }else{
+                    JOptionPane.showMessageDialog(null, "Data User Tidak Ditemukan");
+                    datatable();
+                    btnCari.setText("Cari");
+                    txtCari.setText("");
+                    tambah.setEnabled(true);
+                    update.setEnabled(true);
+                    hapus.setEnabled(true);
+                    batal.setEnabled(false);
                 }
             } catch (Exception e) {
+                        datatable();
+                        btnCari.setText("Cari");
+                        txtCari.setText("");
+                        tambah.setEnabled(true);
+                        update.setEnabled(true);
+                        hapus.setEnabled(true);
+                        batal.setEnabled(false);
             }
-            btnCari.setText("Batal");
+        
         }else{
             datatable();
             btnCari.setText("Cari");
             txtCari.setText("");
             tambah.setEnabled(true);
+            update.setEnabled(true);
+            hapus.setEnabled(true);
+            batal.setEnabled(false);
+        }
         }
     }//GEN-LAST:event_btnCariActionPerformed
 
@@ -443,9 +467,13 @@ public class DataUser extends javax.swing.JInternalFrame {
         if (tombol.equals("TAMBAH")) {
             aktif();
             kosong();
+            autoNumber();
             tambah.setText("SIMPAN");
             update.setEnabled(false);
             hapus.setEnabled(false);
+            batal.setEnabled(true);
+            btnCari.setText("Cari");
+            datatable();
         } else {
             if (txuser.getText() == null || txpassword.getText() == null || cmbxbox.getSelectedItem() == "Pilih Role" ) {
                 JOptionPane.showMessageDialog(null, "Kolom Tidak Boleh Kosong");
@@ -468,6 +496,9 @@ public class DataUser extends javax.swing.JInternalFrame {
                 JOptionPane.showConfirmDialog(null, "Data user gagal disimpan" + e);
             }
             tambah.setText("TAMBAH");
+            update.setEnabled(true);
+            hapus.setEnabled(true);
+            batal.setEnabled(false);
             non_aktif();
             }
             
@@ -481,23 +512,28 @@ public class DataUser extends javax.swing.JInternalFrame {
             update.setText("UPDATE");
             hapus.setEnabled(false);
             tambah.setEnabled(false);
+            batal.setEnabled(true);
         } else {
             String sql = "update login set username=?, password=?, email=?, status=? where id_login='"+txid.getText()+"'";
             try {
                 PreparedStatement stat = conn.prepareStatement(sql);
-
                 stat.setString(1, txuser.getText());
                 stat.setString(2, txpassword.getText());
                 stat.setString(3, txemail.getText());
                 stat.setString(4, cmbxbox.getSelectedItem().toString());
                 stat.executeUpdate();
                 JOptionPane.showMessageDialog(null, "Data User berhasil Di Update");
-                update.setText("EDIT");
-                datatable();
-                kosong();
+                
             } catch (SQLException e) {
                 JOptionPane.showMessageDialog(null, "Data User Gagal Di Update" + e);
             }
+                update.setText("EDIT");
+                hapus.setEnabled(true);
+                tambah.setEnabled(true);
+                batal.setEnabled(false);
+                datatable();
+                kosong();
+                non_aktif();
         }
     }//GEN-LAST:event_updateActionPerformed
 
@@ -509,7 +545,7 @@ public class DataUser extends javax.swing.JInternalFrame {
             try {
                 PreparedStatement stat = conn.prepareStatement(sql);
                 stat.executeUpdate();
-                JOptionPane.showMessageDialog(null, "Data login Berhasil Dihapus");
+                JOptionPane.showMessageDialog(null, "Data User Berhasil Dihapus");
                 kosong();
                 txid.requestFocus();
                 datatable();
@@ -517,6 +553,8 @@ public class DataUser extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(null, "Data Gagal Di Hapus" + e);
             }
         }
+        autoNumber();
+        kosong();
     }//GEN-LAST:event_hapusActionPerformed
 
     private void keluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_keluarActionPerformed
@@ -525,9 +563,7 @@ public class DataUser extends javax.swing.JInternalFrame {
 
     private void tblmekanikMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblmekanikMouseClicked
 
-        update.setEnabled(true);
-        update.setText("EDIT");
-        hapus.setEnabled(true);
+        non_aktif();
         int bar = tblmekanik.getSelectedRow();
         String a = tabmode.getValueAt(bar, 0).toString();
         String b = tabmode.getValueAt(bar, 1).toString();
@@ -539,18 +575,41 @@ public class DataUser extends javax.swing.JInternalFrame {
         txpassword.setText(c);
         txemail.setText(d);
         cmbxbox.setSelectedItem(e);
+        update.setEnabled(true);
+        update.setText("EDIT");
+        hapus.setEnabled(true);
+        batal.setEnabled(false);
+        tambah.setEnabled(true);
     }//GEN-LAST:event_tblmekanikMouseClicked
 
     private void batalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_batalActionPerformed
-        // TODO add your handling code here:
-        tambah.setText("TAMBAH");
-        tambah.setEnabled(true);
-        txid.requestFocus();
-        kosong();
-        non_aktif();
-        update.setEnabled(true);
-        hapus.setEnabled(true);
-        batal.setEnabled(false);
+//        // TODO add your handling code here:
+        
+       String tambah1 = tambah.getText().toString();
+       String update1 = update.getText().toString();
+        
+        if (tambah1.equals("SIMPAN")) {
+            tambah.setText("TAMBAH");
+            tambah.setEnabled(true);
+            txid.requestFocus();
+            kosong();
+            non_aktif();
+            autoNumber();
+            update.setEnabled(true);
+            hapus.setEnabled(true);
+            batal.setEnabled(false);
+        }else if(update1.equals("UPDATE") ) {
+            update.setText("EDIT");
+            update.setEnabled(true);
+            txid.requestFocus();
+            kosong();
+            non_aktif();
+            autoNumber();
+            tambah.setEnabled(true);
+            hapus.setEnabled(true);
+            batal.setEnabled(false);
+        }
+        
     }//GEN-LAST:event_batalActionPerformed
 
 

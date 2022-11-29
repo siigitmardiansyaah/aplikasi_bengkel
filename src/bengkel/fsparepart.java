@@ -75,13 +75,11 @@ public class fsparepart extends javax.swing.JInternalFrame {
     }
     
      private void kosong() {
-        txstok.setText("");
-        txnama.setText("");
-        txharga.setText("");
-        txongkos.setText("");
-        tambah.setEnabled(true);      
-        update.setEnabled(false);
-        hapus.setEnabled(false);
+            txstok.setText("");
+            txnama.setText("");
+            txharga.setText("");
+            txongkos.setText("");
+            tambah.setEnabled(true);      
     }
      
      private void autoNumber() {
@@ -146,6 +144,7 @@ public class fsparepart extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
+        setTitle("Data Sparepart");
         setPreferredSize(new java.awt.Dimension(1062, 551));
 
         jPanel3.setBackground(new java.awt.Color(204, 204, 204));
@@ -169,6 +168,11 @@ public class fsparepart extends javax.swing.JInternalFrame {
                 txhargaActionPerformed(evt);
             }
         });
+        txharga.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txhargaKeyTyped(evt);
+            }
+        });
 
         jLabel5.setFont(new java.awt.Font("Serif", 1, 14)); // NOI18N
         jLabel5.setText("STOK");
@@ -178,9 +182,20 @@ public class fsparepart extends javax.swing.JInternalFrame {
                 txstokActionPerformed(evt);
             }
         });
+        txstok.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txstokKeyTyped(evt);
+            }
+        });
 
         jLabel6.setFont(new java.awt.Font("Serif", 1, 14)); // NOI18N
         jLabel6.setText("ONGKOS");
+
+        txongkos.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txongkosKeyTyped(evt);
+            }
+        });
 
         update.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
         update.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/003-edit.png"))); // NOI18N
@@ -234,31 +249,20 @@ public class fsparepart extends javax.swing.JInternalFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel6))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(txkode, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(txnama)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(txharga)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(txstok)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(txongkos)
-                        .addContainerGap())))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel6))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txkode, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+                            .addComponent(txnama, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txharga, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txstok, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txongkos, javax.swing.GroupLayout.Alignment.TRAILING)))
                     .addComponent(update, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(tambah, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(hapus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -275,25 +279,25 @@ public class fsparepart extends javax.swing.JInternalFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(1, 1, 1)
                         .addComponent(txkode, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(1, 1, 1)
                         .addComponent(txnama, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(1, 1, 1)
                         .addComponent(txharga, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(1, 1, 1)
                         .addComponent(txstok, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(txongkos, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -370,7 +374,7 @@ public class fsparepart extends javax.swing.JInternalFrame {
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(txtCari, javax.swing.GroupLayout.PREFERRED_SIZE, 1233, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(16, 16, 16)
-                        .addComponent(btnCari, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)))
+                        .addComponent(btnCari, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -381,8 +385,10 @@ public class fsparepart extends javax.swing.JInternalFrame {
                     .addComponent(btnCari))
                 .addGap(8, 8, 8)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
 
         jPanel4.setBackground(new java.awt.Color(204, 204, 204));
@@ -432,7 +438,7 @@ public class fsparepart extends javax.swing.JInternalFrame {
             .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
-        setBounds(0, 0, 1377, 646);
+        setBounds(0, 0, 1372, 646);
     }// </editor-fold>//GEN-END:initComponents
 
     private void updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateActionPerformed
@@ -442,6 +448,7 @@ public class fsparepart extends javax.swing.JInternalFrame {
             update.setText("UPDATE");
             hapus.setEnabled(false);
             tambah.setEnabled(false);
+            batal.setEnabled(true);
         } else {
             String sql = "update sparepart set nm_sparepart=?, harga=?, stok=?, ongkos=? where kd_sparepart='"+txkode.getText()+"'";
             try {
@@ -481,12 +488,30 @@ public class fsparepart extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_hapusActionPerformed
 
     private void batalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_batalActionPerformed
-        kosong();
-                        autoNumber();
-        tambah.setText("TAMBAH");
-        update.setEnabled(true);
-        hapus.setEnabled(true);
-        non_aktif();
+String tambah1 = tambah.getText().toString();
+       String update1 = update.getText().toString();
+        
+        if (tambah1.equals("SIMPAN")) {
+            tambah.setText("TAMBAH");
+            tambah.setEnabled(true);
+            txkode.requestFocus();
+            kosong();
+            non_aktif();
+            autoNumber();
+            update.setEnabled(true);
+            hapus.setEnabled(true);
+            batal.setEnabled(false);
+        }else if(update1.equals("UPDATE") ) {
+            update.setText("EDIT");
+            update.setEnabled(true);
+            txkode.requestFocus();
+            kosong();
+            non_aktif();
+            autoNumber();
+            tambah.setEnabled(true);
+            hapus.setEnabled(true);
+            batal.setEnabled(false);
+        }
     }//GEN-LAST:event_batalActionPerformed
 
     private void txstokActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txstokActionPerformed
@@ -494,9 +519,7 @@ public class fsparepart extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txstokActionPerformed
 
     private void tblsparepartMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblsparepartMouseClicked
-        update.setEnabled(true);
-        update.setText("EDIT");
-        hapus.setEnabled(true);
+
         int bar = tblsparepart.getSelectedRow();
         String a = tabmode.getValueAt(bar, 0).toString();
         String b = tabmode.getValueAt(bar, 1).toString();
@@ -508,16 +531,24 @@ public class fsparepart extends javax.swing.JInternalFrame {
         txharga.setText(c);
         txstok.setText(d);
         txongkos.setText(e);
+        update.setEnabled(true);
+        update.setText("EDIT");
+        hapus.setEnabled(true);
+        batal.setEnabled(false);
+        tambah.setEnabled(true);
+        non_aktif();
     }//GEN-LAST:event_tblsparepartMouseClicked
 
     private void tambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahActionPerformed
         String tombol = tambah.getText();
         if (tombol.equals("TAMBAH")) {
             aktif();
+            autoNumber();
             kosong();
             tambah.setText("SIMPAN");
             update.setEnabled(false);
             hapus.setEnabled(false);
+            batal.setEnabled(true);
         } else {
             if(txnama.getText() == null || txharga.getText() == null || txstok.getText() == null || txongkos.getText() == null) {
             JOptionPane.showMessageDialog(null, "Kolom Tidak Boleh Kosong");
@@ -529,9 +560,9 @@ public class fsparepart extends javax.swing.JInternalFrame {
                 PreparedStatement stat = conn.prepareStatement(sql);
                 stat.setString(1, txkode.getText());
                 stat.setString(2, txnama.getText());
-                stat.setString(3, txharga.getText());
-                stat.setString(4, txstok.getText());
-                stat.setString(5, txongkos.getText());
+                stat.setDouble(3, Double.parseDouble(txharga.getText()));
+                stat.setDouble(4, Double.parseDouble(txstok.getText()));
+                stat.setDouble(5, Double.parseDouble(txongkos.getText()));
                 stat.executeUpdate();
                 JOptionPane.showMessageDialog(null, "Data sparepart Berhasil Disimpan");
                 kosong();
@@ -547,7 +578,7 @@ public class fsparepart extends javax.swing.JInternalFrame {
             autoNumber();
             update.setEnabled(true);
             hapus.setEnabled(true);
-            batal.setEnabled(true);
+            batal.setEnabled(false);
             }
 
         }
@@ -559,6 +590,10 @@ public class fsparepart extends javax.swing.JInternalFrame {
 
     private void btnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCariActionPerformed
        String tombol = btnCari.getText();
+       String carii = txtCari.getText();
+       if(carii.equals("")) {
+          JOptionPane.showMessageDialog(null, "Kolom Pencarian Tidak Boleh Kosong"); 
+       } else {
         if (tombol.equals("Cari")){
          Object[] Baris = {"Kode Sparepart", "Nama Sparepart", "Harga", "Stok", "Ongkos"};
         tabmode = new DefaultTableModel(null, Baris);
@@ -568,7 +603,7 @@ public class fsparepart extends javax.swing.JInternalFrame {
         try {
             Statement stat = conn.createStatement();
             ResultSet hasil = stat.executeQuery(sql);
-            while (hasil.next()) {
+            if (hasil.next()) {
                 String kode = hasil.getString("kd_sparepart");
                 String nama = hasil.getString("nm_sparepart");
                 String stok = hasil.getString("stok");
@@ -576,25 +611,70 @@ public class fsparepart extends javax.swing.JInternalFrame {
                 String ongkos = hasil.getString("ongkos");
                 String[] data = {kode,nama,harga,stok, ongkos};
                 tabmode.addRow(data);
+                    btnCari.setText("Batal");
+                    tambah.setEnabled(true);
+                    update.setEnabled(true);
+                    hapus.setEnabled(true);
+                    batal.setEnabled(false);
+            }else{
+                JOptionPane.showMessageDialog(null, "Data Sparepart Tidak Ditemukan");
+                    datatable();
+                    btnCari.setText("Cari");
+                    txtCari.setText("");
+                    tambah.setEnabled(true);
+                    update.setEnabled(true);
+                    hapus.setEnabled(true);
+                    batal.setEnabled(false);
             }
         } catch (Exception e) {
+                        datatable();
+                        btnCari.setText("Cari");
+                        txtCari.setText("");
+                        tambah.setEnabled(true);
+                        update.setEnabled(true);
+                        hapus.setEnabled(true);
+                        batal.setEnabled(false);
         }
-        btnCari.setText("Batal");
     }else{
             datatable();
             btnCari.setText("Cari");
             txtCari.setText("");
             tambah.setEnabled(true);
-            update.setEnabled(false);
-            hapus.setEnabled(false);
+            update.setEnabled(true);
+            hapus.setEnabled(true);
             batal.setEnabled(false);
         }
+       }
     }//GEN-LAST:event_btnCariActionPerformed
 
     private void batal1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_batal1ActionPerformed
         // TODO add your handling code here:
         dispose();
     }//GEN-LAST:event_batal1ActionPerformed
+
+    private void txhargaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txhargaKeyTyped
+        // TODO add your handling code here:
+        char enter = evt.getKeyChar();
+        if(!(Character.isDigit(enter))){
+            evt.consume();
+        }
+    }//GEN-LAST:event_txhargaKeyTyped
+
+    private void txstokKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txstokKeyTyped
+        // TODO add your handling code here:
+        char enter = evt.getKeyChar();
+        if(!(Character.isDigit(enter))){
+            evt.consume();
+        }
+    }//GEN-LAST:event_txstokKeyTyped
+
+    private void txongkosKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txongkosKeyTyped
+        // TODO add your handling code here:
+        char enter = evt.getKeyChar();
+        if(!(Character.isDigit(enter))){
+            evt.consume();
+        }
+    }//GEN-LAST:event_txongkosKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

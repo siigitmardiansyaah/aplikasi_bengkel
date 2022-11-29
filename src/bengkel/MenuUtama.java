@@ -41,8 +41,10 @@ public class MenuUtama extends javax.swing.JFrame {
         try {
                 java.sql.Statement stat = conn.createStatement();
                 ResultSet hasil = stat.executeQuery(sql);
-                while (hasil.next()) {
+                if (hasil.next()) {
                  role = hasil.getString("Status");
+                } else {
+                    role = "";
                 }
         }catch (Exception e) {
 
@@ -51,7 +53,6 @@ public class MenuUtama extends javax.swing.JFrame {
         
         setVisible(true);
         setResizable(true);
-        
         Dimension layar = Toolkit.getDefaultToolkit().getScreenSize();
 
 // membuat titik x dan y
@@ -116,6 +117,8 @@ this.setLocation(x, y);
                 String[] data = {no_faktur,tanggal,nm_pelanggan,nm_mekanik,keluhan,total};
                 tabmode.addRow(data);
             }
+                tabmode.fireTableDataChanged();
+
         } catch (Exception e) {
         }
     }
@@ -196,6 +199,7 @@ this.setLocation(x, y);
         jLabel6 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbltransaksi = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -223,6 +227,7 @@ this.setLocation(x, y);
         jMenuBar2.add(jMenu8);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Dashboard");
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
 
@@ -252,13 +257,13 @@ this.setLocation(x, y);
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(744, 744, 744)
                 .addComponent(lbluser)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(289, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addComponent(jLabel3)
-                .addGap(161, 161, 161)
+                .addGap(200, 200, 200)
                 .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(102, 102, 102)
+                .addGap(63, 63, 63)
                 .addComponent(tgl)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblwktu)
@@ -269,12 +274,12 @@ this.setLocation(x, y);
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(23, 23, 23)
-                        .addComponent(jLabel1))
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(lblwktu)
-                        .addComponent(tgl)))
+                        .addComponent(tgl))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addComponent(jLabel1)))
                 .addGap(82, 82, 82)
                 .addComponent(lbluser)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -390,7 +395,7 @@ this.setLocation(x, y);
         );
 
         jLabel6.setFont(new java.awt.Font("Serif", 1, 14)); // NOI18N
-        jLabel6.setText("Transaksi Hari Ini");
+        jLabel6.setText("TRANSAKSI HARI INI");
 
         tbltransaksi.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -405,6 +410,14 @@ this.setLocation(x, y);
         ));
         jScrollPane1.setViewportView(tbltransaksi);
 
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/013-refresh.png"))); // NOI18N
+        jButton1.setText("Refresh");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -412,18 +425,24 @@ this.setLocation(x, y);
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel6)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton1))))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(jLabel6)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(15, 15, 15)
+                        .addComponent(jLabel6))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(5, 5, 5)
+                        .addComponent(jButton1)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 527, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout dpLayout = new javax.swing.GroupLayout(dp);
@@ -540,14 +559,29 @@ this.setLocation(x, y);
 
         jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/004-brake.png"))); // NOI18N
         jMenuItem4.setText("Sparepart");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
         jMenu6.add(jMenuItem4);
 
         jMenuItem11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/005-technical-support.png"))); // NOI18N
         jMenuItem11.setText("Mekanik");
+        jMenuItem11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem11ActionPerformed(evt);
+            }
+        });
         jMenu6.add(jMenuItem11);
 
         jMenuItem12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/009-customer-service.png"))); // NOI18N
         jMenuItem12.setText("Transaksi");
+        jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem12ActionPerformed(evt);
+            }
+        });
         jMenu6.add(jMenuItem12);
 
         jMenuBar1.add(jMenu6);
@@ -557,10 +591,20 @@ this.setLocation(x, y);
 
         jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/002-profile.png"))); // NOI18N
         jMenuItem2.setText("Profile");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
         jMenu3.add(jMenuItem2);
 
         jMenuItem13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/001-logout.png"))); // NOI18N
         jMenuItem13.setText("Logout");
+        jMenuItem13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem13ActionPerformed(evt);
+            }
+        });
         jMenu3.add(jMenuItem13);
 
         jMenuBar1.add(jMenu3);
@@ -579,19 +623,19 @@ this.setLocation(x, y);
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(dp))
+                .addComponent(dp)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-    
-    
-    if(role.equals("Super User")) {
-        DataUser p = new DataUser();
-        dp.add(p);
-        p.setVisible(true);
+
+    if(role.equals("Admin")) {
+            DataUser p = new DataUser();
+            dp.add(p);
+            p.setVisible(true); 
     } else {
         JOptionPane.showMessageDialog(null,"Anda Tidak Memiliki Akses Ke Menu Ini");
     }
@@ -600,34 +644,8 @@ this.setLocation(x, y);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
-        if(dp != null) {
-//             DataUser a = new DataUser();
-//             fmekanik b = new fmekanik();
-//             fsparepart c = new fsparepart();
-//             fpelanggan d = new fpelanggan();
-//
-//             if(dp.equals(a)) {
-//                 dp.remove(a);
-//                 dp.updateUI();
-//                 a.setVisible(false);
-//             }else if(dp.equals(b)){
-//                 dp.remove(b);
-//                 dp.updateUI();
-//                 b.setVisible(false);
-//             }else if(dp.equals(c)){
-//                 dp.remove(c);
-//                 dp.updateUI();
-//                 c.setVisible(false);
-//             } else if(dp.equals(d)){
-//                 dp.remove(d);
-//                 dp.updateUI();
-//                 d.setVisible(false);
-//             }
-//            dp.remove(dp);
-//             dp.updateUI();
-        }
-        
-        if(role.equals("Admin") || role.equals("Super User")) {
+       
+        if(role.equals("Admin")) {
             fmekanik p= new  fmekanik();
             dp.add(p);
             p.setVisible(true);
@@ -638,7 +656,7 @@ this.setLocation(x, y);
 
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
         
-        if(role.equals("Gudang") || role.equals("Super User")) {
+        if(role.equals("Gudang") || role.equals("Admin")) {
             fsparepart p= new fsparepart();
             dp.add(p);
             p.setVisible(true);
@@ -649,7 +667,7 @@ this.setLocation(x, y);
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
     private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
-        if(role.equals("Admin") || role.equals("Super User")) {
+        if(role.equals("Admin")) {
             fpelanggan p= new fpelanggan();
             dp.add(p);
             p.setVisible(true);
@@ -659,72 +677,94 @@ this.setLocation(x, y);
     }//GEN-LAST:event_jMenuItem10ActionPerformed
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
-        if(dp != null) {
-//             DataUser a = new DataUser();
-//             fmekanik b = new fmekanik();
-//             fsparepart c = new fsparepart();
-//             fpelanggan d = new fpelanggan();
-//
-//             if(dp.equals(a)) {
-//                 dp.remove(a);
-//                 dp.updateUI();
-//                 a.setVisible(false);
-//             }else if(dp.equals(b)){
-//                 dp.remove(b);
-//                 dp.updateUI();
-//                 b.setVisible(false);
-//             }else if(dp.equals(c)){
-//                 dp.remove(c);
-//                 dp.updateUI();
-//                 c.setVisible(false);
-//             } else if(dp.equals(d)){
-//                 dp.remove(d);
-//                 dp.updateUI();
-//                 d.setVisible(false);
-//             }
-            dp.remove(dp);
-             dp.updateUI();
-        }
-        transaksi p= new transaksi();
-        dp.add(p);
-        p.setVisible(true);
+       if(role.equals("Admin") || role.equals("Kasir")) {
+            transaksi p= new transaksi();
+            dp.add(p);
+            p.setVisible(true);  
+       } else {
+            JOptionPane.showMessageDialog(null,"Anda Tidak Memiliki Akses Ke Menu Ini");
+       }
+
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
-        if(dp != null) {
-//             DataUser a = new DataUser();
-//             fmekanik b = new fmekanik();
-//             fsparepart c = new fsparepart();
-//             fpelanggan d = new fpelanggan();
-//
-//             if(dp.equals(a)) {
-//                 dp.remove(a);
-//                 dp.updateUI();
-//                 a.setVisible(false);
-//             }else if(dp.equals(b)){
-//                 dp.remove(b);
-//                 dp.updateUI();
-//                 b.setVisible(false);
-//             }else if(dp.equals(c)){
-//                 dp.remove(c);
-//                 dp.updateUI();
-//                 c.setVisible(false);
-//             } else if(dp.equals(d)){
-//                 dp.remove(d);
-//                 dp.updateUI();
-//                 d.setVisible(false);
-//             }
-            dp.remove(dp);
-             dp.updateUI();
+        if(role.equals("Kasir") || role.equals("Admin")) {
+                   laporan p= new laporan();
+                    dp.add(p);
+                    p.setVisible(true); 
+        } else {
+            JOptionPane.showMessageDialog(null,"Anda Tidak Memiliki Akses Ke Menu Ini");
         }
-        laporan p= new laporan();
-        dp.add(p);
-        p.setVisible(true);
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         // TODO add your handling code here:
+        if(role.equals("Admin") || role.equals("Kasir")) {
+            transaksi p= new transaksi();
+            dp.add(p);
+            p.setVisible(true);  
+       } else {
+            JOptionPane.showMessageDialog(null,"Anda Tidak Memiliki Akses Ke Menu Ini");
+       }
     }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:info();
+        datatable();
+        info();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        // TODO add your handling code here:
+         if(role.equals("Gudang") || role.equals("Admin")) {
+            transaksi p= new transaksi();
+            dp.add(p);
+            p.setVisible(true);  
+       } else {
+            JOptionPane.showMessageDialog(null,"Anda Tidak Memiliki Akses Ke Menu Ini");
+       }
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
+
+    private void jMenuItem11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem11ActionPerformed
+        // TODO add your handling code here:
+         if(role.equals("Admin") || role.equals("Kasir")) {
+            transaksi p= new transaksi();
+            dp.add(p);
+            p.setVisible(true);  
+       } else {
+            JOptionPane.showMessageDialog(null,"Anda Tidak Memiliki Akses Ke Menu Ini");
+       }
+    }//GEN-LAST:event_jMenuItem11ActionPerformed
+
+    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
+        // TODO add your handling code here:
+         if(role.equals("Admin") || role.equals("Kasir")) {
+            transaksi p= new transaksi();
+            dp.add(p);
+            p.setVisible(true);  
+       } else {
+            JOptionPane.showMessageDialog(null,"Anda Tidak Memiliki Akses Ke Menu Ini");
+       }
+    }//GEN-LAST:event_jMenuItem12ActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        // TODO add your handling code here:
+            transaksi p= new transaksi();
+            dp.add(p);
+            p.setVisible(true);  
+       
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem13ActionPerformed
+        // TODO add your handling code here:
+        if(JOptionPane.showConfirmDialog(null,"Anda Yakin Ingin Logout ?",
+            "Informasi",JOptionPane.OK_CANCEL_OPTION,JOptionPane.INFORMATION_MESSAGE)==JOptionPane.OK_OPTION)
+            this.dispose();
+            // northInformation.removeAll();
+            // init();
+            FormLogin login = new FormLogin();
+            login.setVisible(true);
+    }//GEN-LAST:event_jMenuItem13ActionPerformed
 
     public static void main(String args[]) {
          
@@ -733,6 +773,7 @@ this.setLocation(x, y);
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDesktopPane dp;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
