@@ -206,6 +206,7 @@ this.setLocation(x, y);
         jMenuItem8 = new javax.swing.JMenuItem();
         jMenuItem9 = new javax.swing.JMenuItem();
         jMenuItem10 = new javax.swing.JMenuItem();
+        jMenuItem16 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem6 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
@@ -520,6 +521,15 @@ this.setLocation(x, y);
         });
         jMenu1.add(jMenuItem10);
 
+        jMenuItem16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/warehouse.png"))); // NOI18N
+        jMenuItem16.setText("Stock");
+        jMenuItem16.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem16ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem16);
+
         jMenuBar1.add(jMenu1);
 
         jMenu2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/008-transaction.png"))); // NOI18N
@@ -766,6 +776,17 @@ this.setLocation(x, y);
             login.setVisible(true);
     }//GEN-LAST:event_jMenuItem13ActionPerformed
 
+    private void jMenuItem16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem16ActionPerformed
+        // TODO add your handling code here:
+         if(role.equals("Admin") || role.equals("Gudang")) {
+            stok p= new stok();
+            dp.add(p);
+            p.setVisible(true);  
+       } else {
+            JOptionPane.showMessageDialog(null,"Anda Tidak Memiliki Akses Ke Menu Ini");
+       }
+    }//GEN-LAST:event_jMenuItem16ActionPerformed
+
     public static void main(String args[]) {
          
      }
@@ -796,6 +817,7 @@ this.setLocation(x, y);
     private javax.swing.JMenuItem jMenuItem11;
     private javax.swing.JMenuItem jMenuItem12;
     private javax.swing.JMenuItem jMenuItem13;
+    private javax.swing.JMenuItem jMenuItem16;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
