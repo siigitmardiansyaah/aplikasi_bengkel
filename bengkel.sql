@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 4.6.5.2
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 19 Agu 2019 pada 09.05
--- Versi Server: 10.1.21-MariaDB
--- PHP Version: 5.6.30
+-- Generation Time: Nov 30, 2022 at 09:34 AM
+-- Server version: 10.4.24-MariaDB
+-- PHP Version: 7.4.29
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -23,7 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `detail_service`
+-- Table structure for table `detail_service`
 --
 
 CREATE TABLE `detail_service` (
@@ -35,18 +36,10 @@ CREATE TABLE `detail_service` (
   `subtotal` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data untuk tabel `detail_service`
---
-
-INSERT INTO `detail_service` (`kd_sparepart`, `harga`, `jumlah`, `no_faktur`, `ongkos`, `subtotal`) VALUES
-('SP0002', 20000, 2, '19081100001', 8000, 48000),
-('SP0003', 200000, 2, '19081100001', 10000, 410000);
-
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `login`
+-- Table structure for table `login`
 --
 
 CREATE TABLE `login` (
@@ -58,37 +51,39 @@ CREATE TABLE `login` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data untuk tabel `login`
+-- Dumping data for table `login`
 --
 
 INSERT INTO `login` (`username`, `email`, `password`, `status`, `id_login`) VALUES
-('ALWAN', 'alwan2710@gmail.com', '123', 'ADMIN', 'LG0001');
+('user', '123', '123', 'Gudang', 'LG0003'),
+('nasra', 'test@mail.com', 'test', 'Kasir', 'LG0004'),
+('sigit', 'mail.com', 'test', 'Admin', 'LG0005');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `mekanik`
+-- Table structure for table `mekanik`
 --
 
 CREATE TABLE `mekanik` (
   `kd_mekanik` varchar(10) NOT NULL,
   `nm_mekanik` varchar(50) NOT NULL,
   `alamat` text NOT NULL,
-  `no_telepon` int(15) NOT NULL
+  `no_telepon` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data untuk tabel `mekanik`
+-- Dumping data for table `mekanik`
 --
 
 INSERT INTO `mekanik` (`kd_mekanik`, `nm_mekanik`, `alamat`, `no_telepon`) VALUES
-('MK0001', 'DASUK', 'LEGOK NYENANG', 988765),
-('MK0002', 'AWANG', 'sukabumii', 857987);
+('MK0001', 'DASUK', 'LEGOK NYENANG', '988765'),
+('MK0002', 'AWANG', 'sukabumii', '9823131232');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `pelanggan`
+-- Table structure for table `pelanggan`
 --
 
 CREATE TABLE `pelanggan` (
@@ -99,7 +94,7 @@ CREATE TABLE `pelanggan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data untuk tabel `pelanggan`
+-- Dumping data for table `pelanggan`
 --
 
 INSERT INTO `pelanggan` (`kd_pelanggan`, `nm_pelanggan`, `alamat`, `no_telepon`) VALUES
@@ -109,7 +104,7 @@ INSERT INTO `pelanggan` (`kd_pelanggan`, `nm_pelanggan`, `alamat`, `no_telepon`)
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `service_motor`
+-- Table structure for table `service_motor`
 --
 
 CREATE TABLE `service_motor` (
@@ -118,39 +113,51 @@ CREATE TABLE `service_motor` (
   `kd_pelanggan` varchar(10) NOT NULL,
   `kd_mekanik` varchar(10) NOT NULL,
   `no_polisi` varchar(15) NOT NULL,
-  `keluhan` text NOT NULL
+  `keluhan` text NOT NULL,
+  `kd_user` varchar(10) NOT NULL,
+  `total` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data untuk tabel `service_motor`
---
-
-INSERT INTO `service_motor` (`no_faktur`, `tanggal`, `kd_pelanggan`, `kd_mekanik`, `no_polisi`, `keluhan`) VALUES
-('19081100001', '2019-08-11', 'PL0001', 'MK0002', 'F 3456 QPO', 'perbaiki semuanya');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `sparepart`
+-- Table structure for table `sparepart`
 --
 
 CREATE TABLE `sparepart` (
   `kd_sparepart` varchar(10) NOT NULL,
   `nm_sparepart` varchar(50) NOT NULL,
-  `harga` int(10) NOT NULL,
+  `harga` float NOT NULL,
   `stok` int(10) NOT NULL,
   `ongkos` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data untuk tabel `sparepart`
+-- Dumping data for table `sparepart`
 --
 
 INSERT INTO `sparepart` (`kd_sparepart`, `nm_sparepart`, `harga`, `stok`, `ongkos`) VALUES
-('SP0001', 'BAN LUAR', 175000, 45, 10000),
+('SP0001', 'BAN LUAR', 175000, 43, 10000),
 ('SP0002', 'SPION', 20000, 0, 8000),
 ('SP0003', 'JOK', 200000, 9, 10000),
-('SP0004', 'aaa', 60000, 5, 5000);
+('SP0004', 'aaa', 60000, 5, 5000),
+('SP0005', 'Sepda', 12000, 2, 5),
+('SP0006', 'gas', 1233, 1233, 1233);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `stok`
+--
+
+CREATE TABLE `stok` (
+  `id_stok` int(11) NOT NULL,
+  `kd_sparepart` varchar(10) NOT NULL,
+  `qty` int(11) NOT NULL,
+  `jenis` varchar(10) NOT NULL,
+  `tanggal` datetime NOT NULL,
+  `created_by` varchar(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Indexes for dumped tables
@@ -196,15 +203,39 @@ ALTER TABLE `sparepart`
   ADD PRIMARY KEY (`kd_sparepart`);
 
 --
--- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
+-- Indexes for table `stok`
+--
+ALTER TABLE `stok`
+  ADD PRIMARY KEY (`id_stok`);
+
+--
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- Ketidakleluasaan untuk tabel `service_motor`
+-- AUTO_INCREMENT for table `stok`
+--
+ALTER TABLE `stok`
+  MODIFY `id_stok` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `detail_service`
+--
+ALTER TABLE `detail_service`
+  ADD CONSTRAINT `fk_faktur` FOREIGN KEY (`no_faktur`) REFERENCES `service_motor` (`no_faktur`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_sparepart` FOREIGN KEY (`kd_sparepart`) REFERENCES `sparepart` (`kd_sparepart`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `service_motor`
 --
 ALTER TABLE `service_motor`
-  ADD CONSTRAINT `service_motor_ibfk_1` FOREIGN KEY (`kd_mekanik`) REFERENCES `mekanik` (`kd_mekanik`),
-  ADD CONSTRAINT `service_motor_ibfk_2` FOREIGN KEY (`kd_pelanggan`) REFERENCES `pelanggan` (`kd_pelanggan`);
+  ADD CONSTRAINT `service_motor_ibfk_1` FOREIGN KEY (`kd_mekanik`) REFERENCES `mekanik` (`kd_mekanik`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `service_motor_ibfk_2` FOREIGN KEY (`kd_pelanggan`) REFERENCES `pelanggan` (`kd_pelanggan`) ON DELETE CASCADE ON UPDATE CASCADE;
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

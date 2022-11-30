@@ -17,16 +17,17 @@ import java.util.HashMap;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
-
+import model.Pelanggan_m;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRResultSetDataSource;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRResultSetDataSource;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.view.JasperViewer;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 /**
  *
@@ -36,43 +37,34 @@ public class transaksi extends javax.swing.JInternalFrame {
         private Connection conn = new Koneksi().connect();
         private DefaultTableModel tabmode;
         int hrg, sub, jml, ongkos; 
-        String kode_pelanggan;
+        String kd_sparepart,nama_spare;
         
 JasperReport jr;
 JasperPrint jp;
 JasperDesign jd;
 HashMap param = new HashMap();   
 
-//    private void tampilCombosp(){
-//        String sql = "SELECT * FROM sparepart";
-//        try {
-//            Statement stat = conn.createStatement();
-//            ResultSet hasil = stat.executeQuery(sql);
-//            while(hasil.next()){
-//                cbkode.addItem(hasil.getString("kd_sparepart"));
-//            }
-//            hasil.close();
-//            stat.close();
-//            } catch (SQLException ex) {
-//        }         
-//    }
       
-     private void kosong(){
-//    cbkode.setSelectedItem("Sparepart");
+    private void kosong(){
+    autoNumber();
     txHarga.setText("");
     txjumlah.setText("");
-    txStok.setText("0");
+    txStok.setText("");
     txTotal.setText("");
     txKembalian.setText("");
     txBayar.setText("");
     txongkos.setText("");
+    cbmekanik.setSelectedItem("Pilih Mekanik");
+    cbplg.setSelectedItem("Pilih Pelanggan");
+    cbsparepart.setSelectedItem("Pilih Sparepart");
+    txnopol.setText("");
+    txkeluhan.setText("");
     }
     
     private void non_aktif(){
         txNo.setEnabled(false);
         txHarga.setEnabled(false);
         txStok.setEnabled(false);
-        txplg.setEnabled(false);
 //        txDateTime.setEnabled(false);
     }
     
@@ -100,13 +92,17 @@ HashMap param = new HashMap();
         initComponents();
         ((javax.swing.plaf.basic.BasicInternalFrameUI)getUI()).setNorthPane(null);       
         non_aktif();
-//        tampilComboplg();
+        tampilComboplg();
+        AutoCompleteDecorator.decorate(cbplg);
         tampilCombomekanik();
-//        tampilCombosp();
+        AutoCompleteDecorator.decorate(cbmekanik);
+        tampilCombosp();
+        AutoCompleteDecorator.decorate(cbsparepart);
+        kd_p.setVisible(false);
+        kd_meka.setVisible(false);
+        kd_spa.setVisible(false);
         Date date = new Date();
-//        jDateChooser1.setDate(date);
         autoNumber();
-        dataTabel();
         
         tabmode =new DefaultTableModel();
         jTable1.setModel(tabmode);
@@ -116,6 +112,7 @@ HashMap param = new HashMap();
         tabmode.addColumn("jumlah");
         tabmode.addColumn("Ongkos");
         tabmode.addColumn("Sub Total");
+        
     }
     
        private void autoNumber() {
@@ -138,48 +135,16 @@ HashMap param = new HashMap();
         } catch (Exception e) {
             e.printStackTrace();//penanganan masalah
         }
-    }
-       
-       public void getKode(String data) {
-           System.out.println(data);
-           String sql = "SELECT * FROM pelanggan WHERE kd_pelanggan = '"+data+"'";
-            try {
-                Statement stat = conn.createStatement();
-                ResultSet hasil = stat.executeQuery(sql);
-                if (hasil.next()) {
-                    String kode = hasil.getString("kd_pelanggan");
-                    String nama = hasil.getString("nm_pelanggan");
-                               System.out.println(kode);
-           System.out.println(nama);
-
-                    txplg.setText(nama);
-                    kd_pelanggan.setText(kode);
-                }
-            } catch (Exception e) {
-            }
-       }
+    }   
       
-//      private void tampilComboplg(){
-//        String sql = "SELECT * FROM pelanggan";
-//        try {
-//            Statement stat = conn.createStatement();
-//            ResultSet hasil = stat.executeQuery(sql);
-//            while(hasil.next()){
-//                cbplg.addItem(hasil.getString("nm_pelanggan"));
-//            }
-//            hasil.close();
-//            stat.close();
-//            } catch (SQLException ex) {
-//        }         
-//    }
-      
-       private void tampilCombomekanik(){
-        String sql = "SELECT * FROM mekanik";
+       private void tampilComboplg(){
+        String sql = "SELECT * FROM pelanggan order by nm_pelanggan asc";
+        String nama[];
         try {
             Statement stat = conn.createStatement();
             ResultSet hasil = stat.executeQuery(sql);
             while(hasil.next()){
-                cbmekanik.addItem(hasil.getString("nm_mekanik"));
+                cbplg.addItem(hasil.getString("nm_pelanggan"));
             }
             hasil.close();
             stat.close();
@@ -187,23 +152,33 @@ HashMap param = new HashMap();
         }         
     }
       
-//       private void tampilPlg(){ 
-//        try {
-////        String sql = "SELECT kd_pelanggan FROM pelanggan WHERE nm_pelanggan='"+cbplg.getSelectedItem()+"'"; 
-//        Statement stat = conn.createStatement();
-//        ResultSet hasil = stat.executeQuery(sql);
-//        while(hasil.next()){
-//            Object[] ob = new Object[1];
-//            ob[0]=  hasil.getString(1);
-//            txplg.setText((String) ob[0]);
-//        }
-//            hasil.close(); 
-//            hasil.close(); 
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//        }     
-//  
-//    }
+       private void tampilCombomekanik(){
+        String sql = "SELECT * FROM mekanik order by nm_mekanik";
+        try {
+            Statement stat = conn.createStatement();
+            ResultSet hasil = stat.executeQuery(sql);
+            while(hasil.next()){
+                  cbmekanik.addItem(hasil.getString("nm_mekanik"));
+            }
+            hasil.close();
+            stat.close();
+            } catch (SQLException ex) {
+        }         
+    }
+       
+       private void tampilCombosp(){
+        String sql = "SELECT * FROM sparepart order by nm_sparepart";
+        try {
+            Statement stat = conn.createStatement();
+            ResultSet hasil = stat.executeQuery(sql);
+            while(hasil.next()){
+                  cbsparepart.addItem(hasil.getString("nm_sparepart"));
+            }
+            hasil.close();
+            stat.close();
+            } catch (SQLException ex) {
+        }         
+    }
        
         private void tampilMekanik(){ 
         try {
@@ -222,52 +197,8 @@ HashMap param = new HashMap();
         }     
   
     }
-        
-              private void dataTabel(){ 
-        Object[] Baris ={"Kode","Nama Sparepart","Harga","Jumlah", "Ongkos", "Sub Total"};
-        tabmode = new DefaultTableModel(null, Baris);
-        jTable1.setModel(tabmode);   
-        try {
-            String sql = "SELECT * FROM sparepart,detail_service WHERE detail_service.kd_sparepart = sparepart.kd_sparepart "
-                + "AND detail_service.no_faktur='"+this.txNo.getText()+"'";
-            Statement stat = conn.createStatement();
-            ResultSet hasil = stat.executeQuery(sql);
-            while(hasil.next()){
-                String kode = hasil.getString("kd_sparepart");
-                String nama = hasil.getString("nm_sparepart");
-                String harga = hasil.getString("harga");
-                String jumlah = hasil.getString("jumlah");
-                String ongkos = hasil.getString("ongkos");
-                String subtotal = hasil.getString("subtotal");
-                String[] data={kode, nama, harga, jumlah,ongkos, subtotal};
-                tabmode.addRow(data);
-            }
-        } catch (Exception e) {
-        }
-    //menjumlahkan isi colom sub total
-    int total = 0;
-    for (int i =0; i< jTable1.getRowCount(); i++){
-    int amount = Integer.parseInt((String)jTable1.getValueAt(i, 5));
-    total += amount;
-    }
-    txTotal.setText(""+total);
-    }
-        
-    private void hapusservice(){
-//         int ok = JOptionPane.showConfirmDialog(null, "Apakah Anda Yakin ingin Menghapus Data Ini?", "Konfirmasi Dialog", JOptionPane.YES_NO_OPTION);
-//        if (ok == 0) {
-////            String sql = "delete from detail_service where no_faktur='"+txNo.getText() + "' and kd_sparepart='"+cbkode.getSelectedItem()+"'";
-//            try {
-//                PreparedStatement stat = conn.prepareStatement(sql);
-//                stat.executeUpdate();
-//                JOptionPane.showMessageDialog(null, "Data Berhasil Dihapus");
-//                kosong();
-//   
-//            } catch (SQLException e) {
-//                JOptionPane.showMessageDialog(null, "Data Gagal Di Hapus" + e);
-//            }
-//        }
-    }
+                
+    
     private void simpanNota(){
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); 
     Date tanggal = new Date(); 
@@ -279,7 +210,6 @@ HashMap param = new HashMap();
                 PreparedStatement stat = conn.prepareStatement(sql);
                 stat.setString(1, txNo.getText());
                 stat.setString(2, jual_tgl);
-                stat.setString(3, txplg.getText());
 //                stat.setString(4, txmekanik.getText());
                 stat.setString(5, txnopol.getText());
                 stat.setString(6, txkeluhan.getText());
@@ -291,124 +221,76 @@ HashMap param = new HashMap();
                 kosong();
             }
             autoNumber();
-            dataTabel();
     }
          
     private void tambah_item(){
    
+    nama_spare = cbsparepart.getSelectedItem().toString();
     hrg=Integer.parseInt(txHarga.getText());
     jml=Integer.parseInt(txjumlah.getText());
     ongkos= Integer.parseInt(txongkos.getText());
+    int stok = Integer.parseInt(txStok.getText());
     sub = hrg*jml+ongkos;
-    
-    String sql = "INSERT INTO detail_service values(?,?,?,?,?,?)";
-            try {
-                PreparedStatement stat = conn.prepareStatement(sql);
-//                stat.setString(1, (String) cbkode.getSelectedItem());
-                stat.setString(2, txHarga.getText());
-                stat.setString(3, txjumlah.getText());
-                stat.setString(4, txNo.getText());
-                stat.setString(5, txongkos.getText());
-                stat.setString(6, String.valueOf(sub));
-                
-                stat.executeUpdate();
-                kosong();
-//                cbkode.requestFocus();
-                tambahItem.requestFocus();
-                
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, "Data Gagal Disimpan "+e);
-                kosong();
-            }
-            non_aktif();       
+    kd_sparepart = kd_spa.getText();
+    if(jml > stok) {
+        JOptionPane.showMessageDialog(this,"Stok Tidak Cukup"); 
+        cbsparepart.setSelectedItem("Pilih Sparepart");
+        txHarga.setText("");
+        txjumlah.setText("");
+        txongkos.setText("");
+        txStok.setText("");
+    } else if(nama_spare.equals("Pilih Sparepart")){
+        JOptionPane.showMessageDialog(this,"Pilih Terlebih Dahulu Sparepartnya"); 
+        cbsparepart.setSelectedItem("Pilih Sparepart");
+        txHarga.setText("");
+        txjumlah.setText("");
+        txongkos.setText("");
+        txStok.setText("");
+    }else{
+        Object[] Baris ={"Kode","Nama Sparepart","Harga","Jumlah", "Ongkos", "Sub Total"};
+        Object[][] gas = { {kd_sparepart,nama_spare, hrg, jml, ongkos,sub} };
+
+        tabmode = new DefaultTableModel(gas, Baris);
+        jTable1.setModel(tabmode); 
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+         tabmode.addRow(gas);
+         jTable1.repaint();
+         sum();
+        cbsparepart.setSelectedItem("Pilih Sparepart");
+        txHarga.setText("");
+        txjumlah.setText("");
+        txongkos.setText("");
+        txStok.setText("");
+    }
+
+          
     }
     
-     private void update_stok(){
-        int x, y, z;
-        x = Integer.parseInt(txStok.getText());
-        y = Integer.parseInt(txjumlah.getText());
-        z = x-y;
-        try{
-        String sql ="UPDATE sparepart SET stok=? WHERE kd_sparepart=?";  
-        PreparedStatement stat = conn.prepareStatement(sql);
-           stat.setInt(1,z);
-//           stat.setString(2, (String) cbkode.getSelectedItem());
-           stat.executeUpdate();  
-           stat.close();  
-        }catch(SQLException e){  
-        System.out.println("Terjadi Kesalahan");  
-        }finally{
-        JOptionPane.showMessageDialog(this,"Stock sparepart telah di update Diubah");  
+    private void clean_table() {
+        int baris = tabmode.getRowCount();
+        for(int a=0;a<baris;a++) {
+            tabmode.removeRow(a);
         }
     }
-     
-    private void cariKode(){
-    int i=jTable1.getSelectedRow();  
-    if(i==-1)  
-    { return; }  
-    String ID=(String)tabmode.getValueAt(i, 0); 
-//    cbkode.setSelectedItem(ID);
-    }
     
-     private void tampilKlik(){
-//        try {
-//        String sql="SELECT * FROM sparepart, detail_service WHERE "
-//                + "detail_service.kd_sparepart = '"+this.cbkode.getSelectedItem()+"'";
-//        PreparedStatement stat = conn.prepareStatement(sql);
-//        ResultSet rs = stat.executeQuery(sql);
-//        while(rs.next()){
-//        this.txHarga.setText(rs.getString("harga"));
-//        this.txjumlah.setText(rs.getString("jumlah"));
-//        this.txongkos.setText(rs.getString("ongkos"));
-////        this.cbkode.setSelectedItem(rs.getString("kd_sparepart"));
-//        this.txnopol.setText(rs.getString("no_polisi"));
-//        this.txkeluhan.setText(rs.getString("keluhan"));
-//        this.txplg.setText(rs.getString("kd_pelanggan"));
-////        this.txmekanik.setText(rs.getString("kd_mekanik"));
-//        }
-//        rs.close(); 
-//        stat.close();}
-//        catch (Exception e) {
-//            System.out.println(e.getMessage());
-//        }      
-    }
-     
-     private void tampilStok(){
-//        try {
-//        String sql="SELECT * FROM sparepart WHERE kd_sparepart = '"+this.cbkode.getSelectedItem()+"'";
-//        PreparedStatement stat = conn.prepareStatement(sql);
-//        ResultSet rs = stat.executeQuery(sql);
-//        while(rs.next()){
-//        this.txStok.setText(rs.getString("stok"));
-//        }
-//        rs.close(); 
-//        stat.close();}
-//        catch (Exception e) {
-//            System.out.println(e.getMessage());
-//        }      
-    }
-     
         private void hapusData(){
-        try {
-        String sql="DELETE From detail_service WHERE no_faktur='"+txNo.getText()+"'";
-        PreparedStatement stat =conn.prepareStatement(sql);
-        stat.executeUpdate();
-        stat.close();
-        }catch(SQLException e){
-        System.out.println("Terjadi Kesalahan");
-        }finally{
-        }  
-        try {
-        String sql="DELETE FROM service_motor WHERE no_faktur='"+txNo.getText()+"'";
-        PreparedStatement stat =conn.prepareStatement(sql);
-        stat.executeUpdate();
-        stat.close();
-        }catch(SQLException e){
-        System.out.println("Terjadi Kesalahan");
-        }finally{
-        dataTabel();
-        JOptionPane.showMessageDialog(null,"Sukses Hapus Data...");
-        }  
+        int row = jTable1.getSelectedRow();
+        if(row >=0 ){
+        int ok = JOptionPane.showConfirmDialog(null, "Yakin Mau Hapus?","Konfirmasi",JOptionPane.YES_NO_OPTION);
+        if(ok == 0){
+        tabmode.removeRow(row);
+        }     
+        }
+    }
+        
+        private void sum(){
+
+        int total = 0;
+        for (int i =0; i< tabmode.getRowCount(); i++){
+               int amount = Integer.parseInt((String)tabmode.getValueAt(i, 5));
+               total += amount;
+        }
+        txTotal.setText(""+total);
     }
     
     /**
@@ -435,21 +317,21 @@ HashMap param = new HashMap();
         txongkos = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        cbsparepart = new javax.swing.JComboBox();
+        kd_spa = new javax.swing.JTextField();
         jPanel7 = new javax.swing.JPanel();
         txNo = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         txnopol = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        txplg = new javax.swing.JTextField();
         jLabel18 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         cbmekanik = new javax.swing.JComboBox();
-        btnCari = new javax.swing.JButton();
         txkeluhan = new javax.swing.JTextField();
-        kd_pelanggan = new javax.swing.JTextField();
+        kd_p = new javax.swing.JTextField();
+        cbplg = new javax.swing.JComboBox();
+        kd_meka = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -479,7 +361,7 @@ HashMap param = new HashMap();
 
         jLabel4.setBackground(new java.awt.Color(204, 204, 204));
         jLabel4.setFont(new java.awt.Font("Serif", 1, 14)); // NOI18N
-        jLabel4.setText("Kode Sparepart");
+        jLabel4.setText("Nama Sparepart");
 
         jLabel5.setBackground(new java.awt.Color(204, 204, 204));
         jLabel5.setFont(new java.awt.Font("Serif", 1, 14)); // NOI18N
@@ -488,6 +370,8 @@ HashMap param = new HashMap();
         jLabel6.setBackground(new java.awt.Color(204, 204, 204));
         jLabel6.setFont(new java.awt.Font("Serif", 1, 14)); // NOI18N
         jLabel6.setText("Jumlah");
+
+        txHarga.setEditable(false);
 
         txjumlah.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -519,6 +403,8 @@ HashMap param = new HashMap();
             }
         });
 
+        txStok.setEditable(false);
+
         hapusItem.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         hapusItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/004-delete.png"))); // NOI18N
         hapusItem.setText("HAPUS");
@@ -528,6 +414,8 @@ HashMap param = new HashMap();
             }
         });
 
+        txongkos.setEditable(false);
+
         jLabel10.setBackground(new java.awt.Color(204, 204, 204));
         jLabel10.setFont(new java.awt.Font("Serif", 1, 14)); // NOI18N
         jLabel10.setText("Ongkos");
@@ -536,9 +424,12 @@ HashMap param = new HashMap();
         jLabel15.setFont(new java.awt.Font("Serif", 1, 14)); // NOI18N
         jLabel15.setText("Stok");
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/001-search.png"))); // NOI18N
-        jButton1.setText("Cari");
-        jButton1.setToolTipText("");
+        cbsparepart.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Pilih Sparepart" }));
+        cbsparepart.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbsparepartItemStateChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -546,66 +437,61 @@ HashMap param = new HashMap();
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel6)
-                                    .addComponent(jLabel10)
-                                    .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel5))
-                                .addGap(65, 65, 65))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addGap(18, 18, 18)))
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(txStok, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txongkos, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txjumlah, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txHarga, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 384, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton1))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                            .addComponent(jLabel10)
+                            .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel6))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txongkos)
+                            .addComponent(txjumlah)
+                            .addComponent(txHarga)
+                            .addComponent(cbsparepart, 0, 479, Short.MAX_VALUE)
+                            .addComponent(txStok)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(tambahItem, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(hapusItem)))
-                .addContainerGap(36, Short.MAX_VALUE))
+                        .addComponent(hapusItem)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 284, Short.MAX_VALUE)
+                        .addComponent(kd_spa, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(41, 41, 41)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txHarga, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5))
-                        .addGap(6, 6, 6)))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(cbsparepart, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txHarga, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txjumlah, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txongkos, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel15)
-                    .addComponent(txStok, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tambahItem)
-                    .addComponent(hapusItem))
+                    .addComponent(txStok, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel15))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(tambahItem)
+                            .addComponent(hapusItem)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(kd_spa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
@@ -627,7 +513,12 @@ HashMap param = new HashMap();
         jLabel11.setFont(new java.awt.Font("Serif", 1, 14)); // NOI18N
         jLabel11.setText("Mekanik");
 
-        cbmekanik.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Mekanik" }));
+        cbmekanik.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Pilih Mekanik" }));
+        cbmekanik.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbmekanikItemStateChanged(evt);
+            }
+        });
         cbmekanik.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 cbmekanikMouseClicked(evt);
@@ -639,17 +530,16 @@ HashMap param = new HashMap();
             }
         });
 
-        btnCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/001-search.png"))); // NOI18N
-        btnCari.setText("Cari");
-        btnCari.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCariActionPerformed(evt);
-            }
-        });
-
         txkeluhan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txkeluhanActionPerformed(evt);
+            }
+        });
+
+        cbplg.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Pilih Pelanggan" }));
+        cbplg.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbplgItemStateChanged(evt);
             }
         });
 
@@ -660,29 +550,25 @@ HashMap param = new HashMap();
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel13)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel11))
-                        .addGap(7, 7, 7))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel18)
-                        .addGap(18, 18, 18)))
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel13)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel11)
+                    .addComponent(jLabel18))
+                .addGap(64, 64, 64)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txNo)
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(txplg, javax.swing.GroupLayout.DEFAULT_SIZE, 509, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnCari))
-                    .addComponent(txnopol)
                     .addComponent(cbmekanik, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txkeluhan)
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(kd_pelanggan, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                    .addComponent(cbplg, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txnopol))
                 .addContainerGap())
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addGap(139, 139, 139)
+                .addComponent(kd_p, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(kd_meka, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(498, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -695,26 +581,25 @@ HashMap param = new HashMap();
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
                         .addComponent(txNo, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txplg, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel3)
-                        .addComponent(btnCari)))
-                .addGap(5, 5, 5)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel13)
-                    .addComponent(txnopol, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jLabel3)
+                    .addComponent(cbplg, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txnopol, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel13))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cbmekanik, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel18)
-                    .addComponent(txkeluhan, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(kd_pelanggan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(txkeluhan, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel18))
+                .addGap(14, 14, 14)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(kd_p, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(kd_meka, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
@@ -733,6 +618,7 @@ HashMap param = new HashMap();
         ));
         jScrollPane1.setViewportView(jTable1);
 
+        txTotal.setEditable(false);
         txTotal.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         txTotal.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
@@ -780,6 +666,11 @@ HashMap param = new HashMap();
         jButton2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/012-undo.png"))); // NOI18N
         jButton2.setText("KEMBALI");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -830,8 +721,7 @@ HashMap param = new HashMap();
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(txKembalian, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel9))
-                                .addGap(0, 0, Short.MAX_VALUE))))
+                                    .addComponent(jLabel9)))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(4, 4, 4)
                         .addComponent(cetak, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -897,12 +787,6 @@ HashMap param = new HashMap();
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCariActionPerformed
-        // TODO add your handling code here:
-        FormPelanggan p = new FormPelanggan();
-        p.setVisible(true);
-    }//GEN-LAST:event_btnCariActionPerformed
-
     private void cbmekanikActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbmekanikActionPerformed
         tampilMekanik(); // TODO add your handling code here:
     }//GEN-LAST:event_cbmekanikActionPerformed
@@ -917,8 +801,8 @@ HashMap param = new HashMap();
     }//GEN-LAST:event_cbmekanikMouseClicked
 
     private void btbatalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btbatalActionPerformed
-        hapusservice();
-        dataTabel();
+        kosong();
+        clean_table();
     }//GEN-LAST:event_btbatalActionPerformed
 
     private void hapusItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hapusItemActionPerformed
@@ -926,15 +810,11 @@ HashMap param = new HashMap();
     }//GEN-LAST:event_hapusItemActionPerformed
 
     private void tambahItemKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tambahItemKeyPressed
-        update_stok();
         tambah_item();
-        dataTabel();
     }//GEN-LAST:event_tambahItemKeyPressed
 
     private void tambahItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahItemActionPerformed
         tambah_item();
-        update_stok();
-        dataTabel();
     }//GEN-LAST:event_tambahItemActionPerformed
 
     private void txjumlahKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txjumlahKeyPressed
@@ -989,10 +869,6 @@ HashMap param = new HashMap();
             if (bayar>=total){
                 int kembali=bayar-total;
                 txKembalian.setText(String.valueOf(kembali));
-                simpanNota();
-                kosong();
-                txnopol.setText("");
-                txkeluhan.setText("");
             }else{
                 JOptionPane.showMessageDialog(null, "Uang Anda Kurang");
                 txBayar.requestFocus();
@@ -1006,14 +882,70 @@ HashMap param = new HashMap();
         // TODO add your handling code here:
     }//GEN-LAST:event_txBayarActionPerformed
 
+    private void cbplgItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbplgItemStateChanged
+        // TODO add your handling code here:
+        String nm_pelanggan = cbplg.getSelectedItem().toString();
+        String sql = "SELECT * FROM pelanggan where nm_pelanggan = '" + nm_pelanggan + "'";
+        try {
+            Statement stat = conn.createStatement();
+            ResultSet hasil = stat.executeQuery(sql);
+            while(hasil.next()){
+                  kd_p.setText(hasil.getString("kd_pelanggan"));
+            }
+            hasil.close();
+            stat.close();
+            } catch (SQLException ex) {
+        }         
+    }//GEN-LAST:event_cbplgItemStateChanged
+
+    private void cbmekanikItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbmekanikItemStateChanged
+        // TODO add your handling code here:
+        String nm_pelanggan = cbmekanik.getSelectedItem().toString();
+        String sql = "SELECT * FROM mekanik where nm_mekanik = '" + nm_pelanggan + "'";
+        try {
+            Statement stat = conn.createStatement();
+            ResultSet hasil = stat.executeQuery(sql);
+            while(hasil.next()){
+                  kd_meka.setText(hasil.getString("nm_mekanik"));
+            }
+            hasil.close();
+            stat.close();
+            } catch (SQLException ex) {
+        }         
+    }//GEN-LAST:event_cbmekanikItemStateChanged
+
+    private void cbsparepartItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbsparepartItemStateChanged
+        // TODO add your handling code here:
+        String nm_pelanggan = cbsparepart.getSelectedItem().toString();
+        String sql = "SELECT * FROM sparepart where nm_sparepart = '" + nm_pelanggan + "'";
+        try {
+            Statement stat = conn.createStatement();
+            ResultSet hasil = stat.executeQuery(sql);
+            while(hasil.next()){
+                  txHarga.setText(hasil.getString("harga"));
+                  txStok.setText(hasil.getString("stok"));
+                  txongkos.setText(hasil.getString("ongkos"));
+                  kd_spa.setText(hasil.getString("kd_sparepart"));
+            }
+            hasil.close();
+            stat.close();
+            } catch (SQLException ex) {
+        }
+    }//GEN-LAST:event_cbsparepartItemStateChanged
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btbatal;
-    private javax.swing.JButton btnCari;
     private javax.swing.JComboBox cbmekanik;
+    private javax.swing.JComboBox cbplg;
+    private javax.swing.JComboBox cbsparepart;
     private javax.swing.JButton cetak;
     private javax.swing.JButton hapusItem;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -1036,8 +968,9 @@ HashMap param = new HashMap();
     private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField kd_pelanggan;
+    private javax.swing.JTextField kd_meka;
+    private javax.swing.JTextField kd_p;
+    private javax.swing.JTextField kd_spa;
     private javax.swing.JButton tambahItem;
     private javax.swing.JTextField txBayar;
     private javax.swing.JTextField txHarga;
@@ -1049,6 +982,5 @@ HashMap param = new HashMap();
     private javax.swing.JTextField txkeluhan;
     private javax.swing.JTextField txnopol;
     private javax.swing.JTextField txongkos;
-    private javax.swing.JTextField txplg;
     // End of variables declaration//GEN-END:variables
 }

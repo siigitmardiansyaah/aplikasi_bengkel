@@ -4,12 +4,14 @@ import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.*;
 import javax.swing.JOptionPane;
+import model.Login_m;
 
 
 public class FormLogin extends javax.swing.JFrame {
     Koneksi k = new Koneksi();
     ResultSet resultset;
     Statement statement;
+    String id_login,username,status,email;
    
     public FormLogin() {
         initComponents();
@@ -222,16 +224,23 @@ public class FormLogin extends javax.swing.JFrame {
             String sql = "SELECT * FROM login where username='"+txtUsername.getText() + "' and password='"+ txtPass.getText() +"'";
             ResultSet r = s.executeQuery(sql);
             
-            int baris = 0;
             while (r.next()) {
-                baris = r.getRow();
+                id_login = r.getString("id_login");
+                username = r.getString("username");
+                status = r.getString("status");
+                email = r.getString("email");
             }
+            r.last();
             
-            if (baris ==1) {
+            if (r.getRow() == 1) {
+                Login_m.setId_login(id_login);
+                Login_m.setUsername(username);
+                Login_m.setStatus(status);
+                Login_m.setEmail(email);
                 JOptionPane.showMessageDialog(null,"Selamat Login Berhasil");
-                this.setVisible(false); 
+                this.dispose(); 
            //Menuutama adalah nama variabel dari form menu 
-                new MenuUtama(txtUsername.getText()).setVisible(true);
+                new MenuUtama().setVisible(true);
             }else {
                 JOptionPane.showMessageDialog(null,"Login Gagal");
                 txtPass.setText("");

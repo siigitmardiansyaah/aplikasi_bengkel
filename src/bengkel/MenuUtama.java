@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
+import model.Login_m;
 
 public class MenuUtama extends javax.swing.JFrame {
 
@@ -27,28 +28,17 @@ public class MenuUtama extends javax.swing.JFrame {
     private com.mysql.jdbc.Connection Con;
     private DefaultTableModel tabmode;
     private Connection conn = new Koneksi().connect();
-    private String role = "";
+    String username,id_login,status;
 
-
-    public MenuUtama(String Input) {
+    public MenuUtama() {
         initComponents();
-        lbluser.setText(Input);
+        username = Login_m.getUsername();
+        id_login = Login_m.getId_login();
+        status = Login_m.getStatus();
         tgl.setText(tanggal);
         setJam();
         info();
         datatable();
-        String sql = "select * from login where username = '" + lbluser.getText()+"'";
-        try {
-                java.sql.Statement stat = conn.createStatement();
-                ResultSet hasil = stat.executeQuery(sql);
-                if (hasil.next()) {
-                 role = hasil.getString("Status");
-                } else {
-                    role = "";
-                }
-        }catch (Exception e) {
-
-        } 
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         
         setVisible(true);
@@ -60,6 +50,7 @@ int x = layar.width / 2  - this.getSize().width / 2;
 int y = layar.height / 2 - this.getSize().height / 2;
 
 this.setLocation(x, y);
+       
    }
 
     public final void setJam() {
@@ -642,7 +633,7 @@ this.setLocation(x, y);
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
 
-    if(role.equals("Admin")) {
+    if(status.equals("Admin")) {
             DataUser p = new DataUser();
             dp.add(p);
             p.setVisible(true); 
@@ -655,7 +646,7 @@ this.setLocation(x, y);
 
     private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
        
-        if(role.equals("Admin")) {
+        if(status.equals("Admin")) {
             fmekanik p= new  fmekanik();
             dp.add(p);
             p.setVisible(true);
@@ -666,7 +657,7 @@ this.setLocation(x, y);
 
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
         
-        if(role.equals("Gudang") || role.equals("Admin")) {
+        if(status.equals("Gudang") || status.equals("Admin")) {
             fsparepart p= new fsparepart();
             dp.add(p);
             p.setVisible(true);
@@ -677,7 +668,7 @@ this.setLocation(x, y);
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
     private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
-        if(role.equals("Admin")) {
+        if(status.equals("Admin")) {
             fpelanggan p= new fpelanggan();
             dp.add(p);
             p.setVisible(true);
@@ -687,7 +678,7 @@ this.setLocation(x, y);
     }//GEN-LAST:event_jMenuItem10ActionPerformed
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
-       if(role.equals("Admin") || role.equals("Kasir")) {
+       if(status.equals("Admin") || status.equals("Kasir")) {
             transaksi p= new transaksi();
             dp.add(p);
             p.setVisible(true);  
@@ -698,7 +689,7 @@ this.setLocation(x, y);
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
-        if(role.equals("Kasir") || role.equals("Admin")) {
+        if(status.equals("Kasir") || status.equals("Admin")) {
                    laporan p= new laporan();
                     dp.add(p);
                     p.setVisible(true); 
@@ -709,7 +700,7 @@ this.setLocation(x, y);
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         // TODO add your handling code here:
-        if(role.equals("Admin") || role.equals("Kasir")) {
+        if(status.equals("Admin") || status.equals("Kasir")) {
             transaksi p= new transaksi();
             dp.add(p);
             p.setVisible(true);  
@@ -726,7 +717,7 @@ this.setLocation(x, y);
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
         // TODO add your handling code here:
-         if(role.equals("Gudang") || role.equals("Admin")) {
+         if(status.equals("Gudang") || status.equals("Admin")) {
             transaksi p= new transaksi();
             dp.add(p);
             p.setVisible(true);  
@@ -737,7 +728,7 @@ this.setLocation(x, y);
 
     private void jMenuItem11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem11ActionPerformed
         // TODO add your handling code here:
-         if(role.equals("Admin") || role.equals("Kasir")) {
+         if(status.equals("Admin") || status.equals("Kasir")) {
             transaksi p= new transaksi();
             dp.add(p);
             p.setVisible(true);  
@@ -748,7 +739,7 @@ this.setLocation(x, y);
 
     private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
         // TODO add your handling code here:
-         if(role.equals("Admin") || role.equals("Kasir")) {
+         if(status.equals("Admin") || status.equals("Kasir")) {
             transaksi p= new transaksi();
             dp.add(p);
             p.setVisible(true);  
@@ -778,7 +769,7 @@ this.setLocation(x, y);
 
     private void jMenuItem16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem16ActionPerformed
         // TODO add your handling code here:
-         if(role.equals("Admin") || role.equals("Gudang")) {
+         if(status.equals("Admin") || status.equals("Gudang")) {
             stok p= new stok();
             dp.add(p);
             p.setVisible(true);  
