@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -28,6 +29,7 @@ public class MenuUtama extends javax.swing.JFrame {
     private com.mysql.jdbc.Connection Con;
     private DefaultTableModel tabmode;
     private Connection conn = new Koneksi().connect();
+    
     String username,id_login,status;
 
     public MenuUtama() {
@@ -86,39 +88,40 @@ this.setLocation(x, y);
     }
     
         private void datatable() {
-        Object[] Baris = {"Kode Faktur", "Tanggal", "Pelanggan", "Mekanik", "Keluhan","Total"};
+        Object[] Baris = {"Kode Faktur", "Tanggal Transaksi", "Nama", "Nama Mekanik","Total"};
         tabmode = new DefaultTableModel(null, Baris);
-        tbltransaksi.setModel(tabmode);
-        String sql = "select a.no_faktur,a.tanggal,b.nm_pelanggan,c.nm_mekanik,a.keluhan,SUM(SELECT subtotal from detail_transaksi where no_faktur = a.no_faktur) as harga  "
+        tbl_transaksi.setModel(tabmode);
+        String sql = "select a.no_faktur,DATE_FORMAT(a.tanggal,'%d/%m/%Y') as tanggal,b.nm_pelanggan,c.nm_mekanik,a.keluhan, (SELECT sum(subtotal) from detail_service where no_faktur = a.no_faktur) as harga "
                 + "from service_motor a "
                 + "join pelanggan b on a.kd_pelanggan = b.kd_pelanggan"
-                + "join mekanin c on a.kd_mekanin = c.kd_mekanik"
-                + "where a.tanggal = '" + tanggal +"'"
+                + "join mekanik c on a.kd_mekanik = c.kd_mekanik"
+                + "where DATE_FORMAT(a.tanggal,'%d/%m/%Y') = '" + tanggal + "'"
                 + "order by a.tanggal desc";
         try {
             java.sql.Statement stat = conn.createStatement();
             ResultSet hasil = stat.executeQuery(sql);
-            while (hasil.next()) {
+            if (hasil.next()) {
                 String no_faktur = hasil.getString("no_faktur");
-                String tanggal = hasil.getString("tanggal");
+                String tanggal1 = hasil.getString("tanggal");
                 String nm_pelanggan = hasil.getString("nm_pelanggan");
                 String nm_mekanik = hasil.getString("nm_mekanik");
                 String keluhan = hasil.getString("keluhan");
-                String total = hasil.getString("total");
-                String[] data = {no_faktur,tanggal,nm_pelanggan,nm_mekanik,keluhan,total};
+                String harga = hasil.getString("harga");
+                
+                String[] data = {no_faktur,tanggal1,nm_pelanggan,nm_mekanik,keluhan,harga};
                 tabmode.addRow(data);
+            } else{
+                JOptionPane.showMessageDialog(null,"Kosong");
             }
-                tabmode.fireTableDataChanged();
-
-        } catch (Exception e) {
+        } catch (SQLException e) {
         }
     }
         
         private void info() {
-            String sql = "SELECT IFNULL(COUNT(*),0) as total FROM service_motor where tanggal = '" + tanggal + "'";
+            String sql = "SELECT IFNULL(COUNT(*),0) as total FROM service_motor where DATE_FORMAT(tanggal,'%d/%m/%Y') = '" + tanggal + "'";
             String sql1 = "SELECT IFNULL(SUM(b.subtotal),0) as total FROM service_motor a "
                     + "join detail_service b on a.no_faktur = b.no_faktur "
-                    + "where a.tanggal = '" + tanggal + "'";
+                    + "where DATE_FORMAT(a.tanggal,'%d/%m/%Y') = '" + tanggal + "'";
             String sql2 = "SELECT IFNULL(COUNT(*),0) as total FROM sparepart";
             try {
             java.sql.Statement stat = conn.createStatement();
@@ -189,7 +192,7 @@ this.setLocation(x, y);
         jPanel4 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tbltransaksi = new javax.swing.JTable();
+        tbl_transaksi = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -389,7 +392,7 @@ this.setLocation(x, y);
         jLabel6.setFont(new java.awt.Font("Serif", 1, 14)); // NOI18N
         jLabel6.setText("TRANSAKSI HARI INI");
 
-        tbltransaksi.setModel(new javax.swing.table.DefaultTableModel(
+        tbl_transaksi.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -400,7 +403,7 @@ this.setLocation(x, y);
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(tbltransaksi);
+        jScrollPane1.setViewportView(tbl_transaksi);
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/013-refresh.png"))); // NOI18N
         jButton1.setText("Refresh");
@@ -825,7 +828,7 @@ this.setLocation(x, y);
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbluser;
     private javax.swing.JLabel lblwktu;
-    private javax.swing.JTable tbltransaksi;
+    private javax.swing.JTable tbl_transaksi;
     private javax.swing.JLabel tgl;
     private javax.swing.JLabel txt_duit;
     private javax.swing.JLabel txt_servis;

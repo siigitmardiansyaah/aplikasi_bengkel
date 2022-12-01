@@ -11,12 +11,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Calendar;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import model.Login_m;
 import model.Pelanggan_m;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRResultSetDataSource;
@@ -65,6 +70,8 @@ HashMap param = new HashMap();
         txNo.setEnabled(false);
         txHarga.setEnabled(false);
         txStok.setEnabled(false);
+        txongkos.setEnabled(false);
+        txTotal.setEnabled(false);
 //        txDateTime.setEnabled(false);
     }
     
@@ -118,9 +125,9 @@ HashMap param = new HashMap();
        private void autoNumber() {
         try {
             java.util.Date tgl = new java.util.Date();  
-            java.text.SimpleDateFormat kal = new java.text.SimpleDateFormat("yyMMdd");  
-            java.text.SimpleDateFormat tanggal = new java.text.SimpleDateFormat("yyyyMMdd");  
-            String sql = "SELECT MAX(no_faktur) FROM service_motor WHERE tanggal ="+tanggal.format(tgl);
+            java.text.SimpleDateFormat kal = new java.text.SimpleDateFormat("yyyyMM");  
+            java.text.SimpleDateFormat tanggal = new java.text.SimpleDateFormat("yyyyMM");  
+            String sql = "SELECT MAX(no_faktur) FROM service_motor WHERE SUBSTRING(no_faktur,1,6) = '" +tanggal.format(tgl) +"'";
             PreparedStatement stat = conn.prepareStatement(sql);
             ResultSet rs = stat.executeQuery(sql);
             while(rs.next()){  
@@ -246,31 +253,32 @@ HashMap param = new HashMap();
         txjumlah.setText("");
         txongkos.setText("");
         txStok.setText("");
+    } else if(jml == 0){
+        JOptionPane.showMessageDialog(this,"Jumlah Tidak Boleh 0"); 
+        txjumlah.setText("");
     }else{
-        Object[] Baris ={"Kode","Nama Sparepart","Harga","Jumlah", "Ongkos", "Sub Total"};
-        Object[][] gas = { {kd_sparepart,nama_spare, hrg, jml, ongkos,sub} };
-
-        tabmode = new DefaultTableModel(gas, Baris);
-        jTable1.setModel(tabmode); 
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-         tabmode.addRow(gas);
-         jTable1.repaint();
-         sum();
+        Object[] data = {kd_sparepart,nama_spare, hrg, jml, ongkos,sub };
+        tabmode = (DefaultTableModel)jTable1.getModel();
+        tabmode.addRow(data);
         cbsparepart.setSelectedItem("Pilih Sparepart");
         txHarga.setText("");
         txjumlah.setText("");
         txongkos.setText("");
         txStok.setText("");
-    }
+        int total = 0;
+        for (int i =0; i< jTable1.getRowCount(); i++){
+               total = total + Integer.parseInt(jTable1.getValueAt(i, 5).toString());
+        }
+        txTotal.setText(Integer.toString(total));
+        JOptionPane.showMessageDialog(null, "Sparepart Berhasil Di Tambah");
 
-          
+    }
+    
     }
     
     private void clean_table() {
-        int baris = tabmode.getRowCount();
-        for(int a=0;a<baris;a++) {
-            tabmode.removeRow(a);
-        }
+       tabmode = (DefaultTableModel) jTable1.getModel();
+       tabmode.setRowCount(0);
     }
     
         private void hapusData(){
@@ -283,16 +291,6 @@ HashMap param = new HashMap();
         }
     }
         
-        private void sum(){
-
-        int total = 0;
-        for (int i =0; i< tabmode.getRowCount(); i++){
-               int amount = Integer.parseInt((String)tabmode.getValueAt(i, 5));
-               total += amount;
-        }
-        txTotal.setText(""+total);
-    }
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -310,7 +308,6 @@ HashMap param = new HashMap();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         txHarga = new javax.swing.JTextField();
-        txjumlah = new javax.swing.JTextField();
         tambahItem = new javax.swing.JButton();
         txStok = new javax.swing.JTextField();
         hapusItem = new javax.swing.JButton();
@@ -319,6 +316,7 @@ HashMap param = new HashMap();
         jLabel15 = new javax.swing.JLabel();
         cbsparepart = new javax.swing.JComboBox();
         kd_spa = new javax.swing.JTextField();
+        txjumlah = new javax.swing.JTextField();
         jPanel7 = new javax.swing.JPanel();
         txNo = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
@@ -373,22 +371,6 @@ HashMap param = new HashMap();
 
         txHarga.setEditable(false);
 
-        txjumlah.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                txjumlahMouseClicked(evt);
-            }
-        });
-        txjumlah.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txjumlahActionPerformed(evt);
-            }
-        });
-        txjumlah.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txjumlahKeyPressed(evt);
-            }
-        });
-
         tambahItem.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         tambahItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/002-plus.png"))); // NOI18N
         tambahItem.setText("TAMBAH");
@@ -431,33 +413,37 @@ HashMap param = new HashMap();
             }
         });
 
+        txjumlah.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txjumlahKeyTyped(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel10)
+                    .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel6))
+                .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel10)
-                            .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel6))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txongkos)
-                            .addComponent(txjumlah)
-                            .addComponent(txHarga)
-                            .addComponent(cbsparepart, 0, 479, Short.MAX_VALUE)
-                            .addComponent(txStok)))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(kd_spa, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(tambahItem, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(hapusItem)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 284, Short.MAX_VALUE)
-                        .addComponent(kd_spa, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(hapusItem))
+                    .addComponent(txongkos)
+                    .addComponent(txjumlah)
+                    .addComponent(txHarga)
+                    .addComponent(cbsparepart, 0, 470, Short.MAX_VALUE)
+                    .addComponent(txStok))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -468,13 +454,13 @@ HashMap param = new HashMap();
                     .addComponent(jLabel4)
                     .addComponent(cbsparepart, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txHarga, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txjumlah, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6))
+                    .addComponent(jLabel6)
+                    .addComponent(txjumlah, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txongkos, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -485,14 +471,15 @@ HashMap param = new HashMap();
                     .addComponent(jLabel15))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(kd_spa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(50, 50, 50))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(tambahItem)
-                            .addComponent(hapusItem)))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(kd_spa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                            .addComponent(hapusItem))
+                        .addContainerGap())))
         );
 
         jPanel7.setBackground(new java.awt.Color(204, 204, 204));
@@ -555,7 +542,7 @@ HashMap param = new HashMap();
                     .addComponent(jLabel1)
                     .addComponent(jLabel11)
                     .addComponent(jLabel18))
-                .addGap(64, 64, 64)
+                .addGap(69, 69, 69)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txNo)
                     .addComponent(cbmekanik, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -568,7 +555,7 @@ HashMap param = new HashMap();
                 .addComponent(kd_p, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(kd_meka, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(498, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -581,14 +568,15 @@ HashMap param = new HashMap();
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
                         .addComponent(txNo, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(cbplg, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cbplg, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txnopol, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel13))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cbmekanik, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11))
@@ -596,10 +584,11 @@ HashMap param = new HashMap();
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txkeluhan, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel18))
-                .addGap(14, 14, 14)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(kd_p, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(kd_meka, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(kd_meka, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(8, 8, 8))
         );
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
@@ -613,7 +602,7 @@ HashMap param = new HashMap();
                 {null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Kode Sparepart", "Nama Sparepart", "Title 3", "Title 4"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
@@ -622,16 +611,16 @@ HashMap param = new HashMap();
         txTotal.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         txTotal.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
-        jLabel2.setFont(new java.awt.Font("Serif", 1, 14)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Serif", 1, 18)); // NOI18N
         jLabel2.setText("Total");
 
-        jLabel8.setFont(new java.awt.Font("Serif", 1, 14)); // NOI18N
+        jLabel8.setFont(new java.awt.Font("Serif", 1, 18)); // NOI18N
         jLabel8.setText("Bayar");
 
-        jLabel9.setFont(new java.awt.Font("Serif", 1, 14)); // NOI18N
+        jLabel9.setFont(new java.awt.Font("Serif", 1, 18)); // NOI18N
         jLabel9.setText("Kembalian");
 
-        txBayar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        txBayar.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         txBayar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txBayarActionPerformed(evt);
@@ -641,9 +630,13 @@ HashMap param = new HashMap();
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txBayarKeyPressed(evt);
             }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txBayarKeyTyped(evt);
+            }
         });
 
-        txKembalian.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        txKembalian.setEditable(false);
+        txKembalian.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
 
         cetak.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         cetak.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/006-printer.png"))); // NOI18N
@@ -678,56 +671,52 @@ HashMap param = new HashMap();
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane1)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(330, 330, 330)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel9)
                             .addComponent(jLabel2)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel9)
-                                    .addComponent(jLabel8))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txTotal)
-                                    .addComponent(txBayar, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
-                                    .addComponent(txKembalian, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE))))
-                        .addGap(147, 147, 147)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel8))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txBayar, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txKembalian, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
+                        .addComponent(cetak, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btbatal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(cetak, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2))
+                        .addGap(12, 12, 12)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txBayar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel9))
+                        .addGap(11, 11, 11)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(txTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel2))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel8)
-                                    .addComponent(txBayar))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(txKembalian, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel9)))))
+                            .addComponent(txKembalian, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel8)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(4, 4, 4)
-                        .addComponent(cetak, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btbatal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(12, 12, 12))))
+                        .addComponent(btbatal, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cetak, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -735,9 +724,9 @@ HashMap param = new HashMap();
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel5Layout.setVerticalGroup(
@@ -749,7 +738,7 @@ HashMap param = new HashMap();
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -768,9 +757,9 @@ HashMap param = new HashMap();
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel12)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(36, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -800,11 +789,6 @@ HashMap param = new HashMap();
 //        }
     }//GEN-LAST:event_cbmekanikMouseClicked
 
-    private void btbatalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btbatalActionPerformed
-        kosong();
-        clean_table();
-    }//GEN-LAST:event_btbatalActionPerformed
-
     private void hapusItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hapusItemActionPerformed
         hapusData();
     }//GEN-LAST:event_hapusItemActionPerformed
@@ -817,70 +801,9 @@ HashMap param = new HashMap();
         tambah_item();
     }//GEN-LAST:event_tambahItemActionPerformed
 
-    private void txjumlahKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txjumlahKeyPressed
-        // TODO add your handling code here:
-        if (evt.getKeyCode()==KeyEvent.VK_ENTER) {
-            int jumlah = Integer.parseInt(txjumlah.getText());
-            int stok = Integer.parseInt(txStok.getText());
-            if(evt.getKeyCode()==KeyEvent.VK_ENTER){
-                if (stok < jumlah ){
-                    JOptionPane.showMessageDialog(null,"Stok Kurang");
-                    txjumlah.requestFocus();
-                    txjumlah.setText("");
-                }else {
-                    txongkos.requestFocus();
-                    tambahItem.requestFocus();
-                }
-            }
-        }
-    }//GEN-LAST:event_txjumlahKeyPressed
-
-    private void txjumlahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txjumlahActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txjumlahActionPerformed
-
-    private void txjumlahMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txjumlahMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txjumlahMouseClicked
-
     private void txkeluhanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txkeluhanActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txkeluhanActionPerformed
-
-    private void cetakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cetakActionPerformed
-        try {
-            File report = new File("src/report/cetak.jrxml");
-            jd = JRXmlLoader.load(report);
-            param.clear();
-            //param.put("kd",Integer.parseInt(txtcari.getText()));
-            jr =JasperCompileManager.compileReport(jd);
-            jp = JasperFillManager.fillReport(jr, param, conn);
-            JasperViewer.viewReport(jp, false);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
-        }
-    }//GEN-LAST:event_cetakActionPerformed
-
-    private void txBayarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txBayarKeyPressed
-        // TODO add your handling code here:
-        if(evt.getKeyCode()==KeyEvent.VK_ENTER){
-            int bayar=Integer.parseInt(txBayar.getText());
-            int total=Integer.parseInt(txTotal.getText());
-            if (bayar>=total){
-                int kembali=bayar-total;
-                txKembalian.setText(String.valueOf(kembali));
-            }else{
-                JOptionPane.showMessageDialog(null, "Uang Anda Kurang");
-                txBayar.requestFocus();
-                txBayar.setText("");
-            }
-
-        }
-    }//GEN-LAST:event_txBayarKeyPressed
-
-    private void txBayarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txBayarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txBayarActionPerformed
 
     private void cbplgItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbplgItemStateChanged
         // TODO add your handling code here:
@@ -906,7 +829,7 @@ HashMap param = new HashMap();
             Statement stat = conn.createStatement();
             ResultSet hasil = stat.executeQuery(sql);
             while(hasil.next()){
-                  kd_meka.setText(hasil.getString("nm_mekanik"));
+                  kd_meka.setText(hasil.getString("kd_mekanik"));
             }
             hasil.close();
             stat.close();
@@ -933,10 +856,184 @@ HashMap param = new HashMap();
         }
     }//GEN-LAST:event_cbsparepartItemStateChanged
 
+    private void txjumlahKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txjumlahKeyTyped
+        // TODO add your handling code here:
+               char enter = evt.getKeyChar();
+        if(!(Character.isDigit(enter))){
+            evt.consume();
+        }
+    }//GEN-LAST:event_txjumlahKeyTyped
+
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void btbatalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btbatalActionPerformed
+        kosong();
+        clean_table();
+    }//GEN-LAST:event_btbatalActionPerformed
+
+    private void cetakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cetakActionPerformed
+        
+        
+       // DATA UNTUK VALIDASI
+            double total = Double.parseDouble(txTotal.getText());
+            double bayar = Double.parseDouble(txBayar.getText());        
+       // DATA UNTUK VALIDASI
+       // DATA UNTUK HEADER
+            String no_faktur = txNo.getText();
+            String kd_pelanggan = kd_p.getText();
+            String noPolisi = txnopol.getText();
+            String kd_mekanik = kd_meka.getText();
+            String keluhan = txkeluhan.getText();
+            String kd_user = Login_m.getId_login();
+            Date date= new Date();
+            long time = date.getTime();
+            Timestamp strDate = new Timestamp(time);
+       // DATA UNTUK HEADER
+            
+       // MULAI INSERT K DATABASE
+            if(bayar >= total) {
+                tabmode = (DefaultTableModel)jTable1.getModel();
+                if(tabmode.getRowCount() == 0) {
+                   JOptionPane.showMessageDialog(null, "Data Sparepart Kosong");
+                }else{
+                    // INSERT HEADER DULU
+                       String sql = "INSERT INTO service_motor (no_faktur,kd_pelanggan,kd_mekanik,no_polisi,keluhan,kd_user,total) VALUES (?,?,?,?,?,?,?)";
+                        try {
+                            PreparedStatement stat = conn.prepareStatement(sql);
+                            stat.setString(1, no_faktur);
+                            stat.setString(2, kd_pelanggan);
+                            stat.setString(3, kd_mekanik);
+                            stat.setString(4, noPolisi);
+                            stat.setString(5, keluhan);
+                            stat.setString(6, kd_user);
+                            stat.setString(7, txTotal.getText());
+                            stat.executeUpdate();
+                        } catch (SQLException e) {
+                            JOptionPane.showMessageDialog(null, "Data Gagal Disimpan "+e);
+                        }
+                    // INSERT HEADER DULU
+                        
+                    // INSERT DETAILNYA
+                       for(int i = 0; i < tabmode.getRowCount(); i++){
+                          String a = tabmode.getValueAt(i, 0).toString(); // KODE SPAREPART
+                          String b = tabmode.getValueAt(i, 2).toString(); // HARGA
+                          String c = tabmode.getValueAt(i, 3).toString(); // JUMLAH
+                          String d = tabmode.getValueAt(i, 4).toString(); // ONGKOS
+                          String e = tabmode.getValueAt(i, 5).toString(); // SUB TOTAL
+                          
+                          // MULAIN INSERT DETAIL
+                            String sql1 = "INSERT INTO detail_service (kd_sparepart, harga, jumlah, no_faktur, ongkos, subtotal) VALUES(?,?,?,?,?,?)";
+                              try {
+                                  PreparedStatement stat1 = conn.prepareStatement(sql1);
+                                  stat1.setString(1, a);
+                                  stat1.setString(2, b);
+                                  stat1.setString(3, c);
+                                  stat1.setString(4, no_faktur);
+                                  stat1.setString(5, d);
+                                  stat1.setString(6, e);
+                                  stat1.executeUpdate();
+                              } catch (SQLException f) {
+                                  JOptionPane.showMessageDialog(null, "Data Gagal Disimpan "+f);
+                              }
+                          // MULAI INSERT DETAIL
+                              
+                        // UPDATE STOK
+                            String sql2 = "INSERT INTO stok (kd_sparepart,qty,jenis,created_by,keterangan) VALUES (?,?,?,?,?)";
+                                try {
+                                    PreparedStatement stat2 = conn.prepareStatement(sql2);
+                                    stat2.setString(1, a);
+                                    stat2.setString(2, c);
+                                    stat2.setString(3, "OUT");
+                                    stat2.setString(4, kd_user);
+                                    stat2.setString(5, "Terjual");
+                                    stat2.executeUpdate();
+                                } catch (SQLException g) {
+                                    JOptionPane.showMessageDialog(null, "Data Gagal Disimpan "+g);
+                                }
+                          // UPDATE STOK
+                                
+                          // CETAK STRUK
+                                try {
+                                        File report = new File("C:\\Users\\mardi\\Documents\\NetBeansProjects\\aplikasi_bengkel\\src\\report\\cetak.jrxml");
+                                        jd = JRXmlLoader.load(report);
+//                                        param.clear();
+                                        param.put("no_faktur",txNo.getText());
+                                        jr = JasperCompileManager.compileReport(jd);
+                                        jp = JasperFillManager.fillReport(jr, param, conn);
+                                        JasperViewer.viewReport(jp, false);
+                                    } catch (JRException h) {
+                                        JOptionPane.showMessageDialog(null, h);
+                                    }
+                          // CETAK STRUK
+                          
+                          
+                       }
+//                    
+                    // INSERT DETAILNYA
+                       
+                               kosong();
+                               clean_table();
+                               JOptionPane.showMessageDialog(null, "Data Berhasil Di Simpan");
+                }
+            } else if(txBayar.getText() == null || txKembalian.getText() == null) {
+             JOptionPane.showMessageDialog(null, "Kolom Bayar Atau Kolom Kembalian Tidak Boleh Kosong");
+            }else{
+                JOptionPane.showMessageDialog(null, "Uang Anda Kurang");
+                txBayar.setText("");
+            }
+        // MULAI INSERT K DATABASE
+
+            
+       // DATA UNTUK DETAIL
+            
+       // DATA UNTUK DETAIL
+    }//GEN-LAST:event_cetakActionPerformed
+
+    private void txBayarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txBayarKeyTyped
+        // TODO add your handling code here:
+        char enter = evt.getKeyChar();
+        if(!(Character.isDigit(enter))){
+            evt.consume();
+        }
+        
+        if(evt.getKeyCode()==KeyEvent.VK_ENTER){
+            int bayar=Integer.parseInt(txBayar.getText());
+            int total=Integer.parseInt(txTotal.getText());
+            if (bayar>=total){
+                int kembali=bayar-total;
+                txKembalian.setText(String.valueOf(kembali));
+            }else{
+                JOptionPane.showMessageDialog(null, "Uang Anda Kurang");
+                txBayar.requestFocus();
+                txBayar.setText("");
+            }
+        }
+        
+    }//GEN-LAST:event_txBayarKeyTyped
+
+    private void txBayarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txBayarKeyPressed
+        // TODO add your handling code here:
+        if(evt.getKeyCode()==KeyEvent.VK_ENTER){
+            int bayar=Integer.parseInt(txBayar.getText());
+            int total=Integer.parseInt(txTotal.getText());
+            if (bayar>=total){
+                int kembali=bayar-total;
+                txKembalian.setText(String.valueOf(kembali));
+            }else{
+                JOptionPane.showMessageDialog(null, "Uang Anda Kurang");
+                txBayar.requestFocus();
+                txBayar.setText("");
+            }
+
+        }
+    }//GEN-LAST:event_txBayarKeyPressed
+
+    private void txBayarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txBayarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txBayarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
