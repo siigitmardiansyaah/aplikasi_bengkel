@@ -7,6 +7,7 @@ package bengkel;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -41,15 +42,9 @@ import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 public class transaksi extends javax.swing.JInternalFrame {
         private Connection conn = new Koneksi().connect();
         private DefaultTableModel tabmode;
-        int hrg, sub, jml, ongkos; 
-        String kd_sparepart,nama_spare;
-        
-JasperReport jr;
-JasperPrint jp;
-JasperDesign jd;
-HashMap param = new HashMap();   
-
-      
+        int hrg, sub, jml, ongkos,stok; 
+        String kd_sparepart,nama_spare,id_service;
+   
     private void kosong(){
     autoNumber();
     txHarga.setText("");
@@ -72,25 +67,7 @@ HashMap param = new HashMap();
         txStok.setEnabled(false);
         txongkos.setEnabled(false);
         txTotal.setEnabled(false);
-//        txDateTime.setEnabled(false);
     }
-    
-//     private void kodeSparepart(){
-//        String sql = "SELECT * FROM sparepart WHERE kd_sparepart = '"+cbkode.getSelectedItem()+"'";
-//        try {
-//            Statement stat = conn.createStatement();
-//            ResultSet hasil = stat.executeQuery(sql);
-//            while(hasil.next()){
-//                txHarga.setText(hasil.getString("harga"));
-//                txongkos.setText(hasil.getString("ongkos"));
-//                txjumlah.requestFocus();
-//                txStok.setText(hasil.getString("stok"));
-//            }
-//            hasil.close();
-//            stat.close();
-//            } catch (SQLException ex) {
-//        }         
-//    }
      
     /**
      * Creates new form 
@@ -108,18 +85,23 @@ HashMap param = new HashMap();
         kd_p.setVisible(false);
         kd_meka.setVisible(false);
         kd_spa.setVisible(false);
+        kode_mekakanik.setVisible(false);
         Date date = new Date();
         autoNumber();
         
         tabmode =new DefaultTableModel();
         jTable1.setModel(tabmode);
+        tabmode.addColumn("Id Sparepart");
         tabmode.addColumn("Kode");
         tabmode.addColumn("Nama Sparepart");
         tabmode.addColumn("Harga");
         tabmode.addColumn("jumlah");
         tabmode.addColumn("Ongkos");
         tabmode.addColumn("Sub Total");
-        
+        jTable1.getColumnModel().getColumn(0).setWidth(0);
+        jTable1.getColumnModel().getColumn(0).setMinWidth(0);
+        jTable1.getColumnModel().getColumn(0).setMaxWidth(0);
+
     }
     
        private void autoNumber() {
@@ -139,14 +121,12 @@ HashMap param = new HashMap();
                 }  
             }  
             rs.close();
-        } catch (Exception e) {
-            e.printStackTrace();//penanganan masalah
+        } catch (SQLException e) {
         }
     }   
       
        private void tampilComboplg(){
         String sql = "SELECT * FROM pelanggan order by nm_pelanggan asc";
-        String nama[];
         try {
             Statement stat = conn.createStatement();
             ResultSet hasil = stat.executeQuery(sql);
@@ -186,49 +166,7 @@ HashMap param = new HashMap();
             } catch (SQLException ex) {
         }         
     }
-       
-        private void tampilMekanik(){ 
-        try {
-        String sql = "SELECT kd_mekanik FROM mekanik WHERE nm_mekanik='"+cbmekanik.getSelectedItem()+"'"; 
-        Statement stat = conn.createStatement();
-        ResultSet hasil = stat.executeQuery(sql);
-        while(hasil.next()){
-            Object[] ob = new Object[1];
-            ob[0]=  hasil.getString(1);
-//            txmekanik.setText((String) ob[0]);
-        }
-            hasil.close(); 
-            hasil.close(); 
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }     
-  
-    }
-                
-    
-    private void simpanNota(){
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); 
-    Date tanggal = new Date(); 
-//    tanggal = jDateChooser1.getDate(); 
-    String jual_tgl = dateFormat.format(tanggal);
-    
-    String sql = "INSERT INTO service_motor VALUES(?,?,?,?,?,?)";
-            try {
-                PreparedStatement stat = conn.prepareStatement(sql);
-                stat.setString(1, txNo.getText());
-                stat.setString(2, jual_tgl);
-//                stat.setString(4, txmekanik.getText());
-                stat.setString(5, txnopol.getText());
-                stat.setString(6, txkeluhan.getText());
-                stat.executeUpdate();
-                JOptionPane.showMessageDialog(null, "Data Berhasil Disimpan");
-                
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, "Data Gagal Disimpan "+e);
-                kosong();
-            }
-            autoNumber();
-    }
+   
          
     private void tambah_item(){
    
@@ -236,9 +174,10 @@ HashMap param = new HashMap();
     hrg=Integer.parseInt(txHarga.getText());
     jml=Integer.parseInt(txjumlah.getText());
     ongkos= Integer.parseInt(txongkos.getText());
-    int stok = Integer.parseInt(txStok.getText());
+    stok = Integer.parseInt(txStok.getText());
     sub = hrg*jml+ongkos;
     kd_sparepart = kd_spa.getText();
+    String kodeee = kode_mekakanik.getText();
     if(jml > stok) {
         JOptionPane.showMessageDialog(this,"Stok Tidak Cukup"); 
         cbsparepart.setSelectedItem("Pilih Sparepart");
@@ -257,7 +196,7 @@ HashMap param = new HashMap();
         JOptionPane.showMessageDialog(this,"Jumlah Tidak Boleh 0"); 
         txjumlah.setText("");
     }else{
-        Object[] data = {kd_sparepart,nama_spare, hrg, jml, ongkos,sub };
+        Object[] data = {kd_sparepart,kodeee,nama_spare, hrg, jml, ongkos,sub };
         tabmode = (DefaultTableModel)jTable1.getModel();
         tabmode.addRow(data);
         cbsparepart.setSelectedItem("Pilih Sparepart");
@@ -265,13 +204,13 @@ HashMap param = new HashMap();
         txjumlah.setText("");
         txongkos.setText("");
         txStok.setText("");
+        kode_mekakanik.setText("");
         int total = 0;
         for (int i =0; i< jTable1.getRowCount(); i++){
-               total = total + Integer.parseInt(jTable1.getValueAt(i, 5).toString());
+               total = total + Integer.parseInt(jTable1.getValueAt(i, 6).toString());
         }
         txTotal.setText(Integer.toString(total));
         JOptionPane.showMessageDialog(null, "Sparepart Berhasil Di Tambah");
-
     }
     
     }
@@ -317,6 +256,7 @@ HashMap param = new HashMap();
         cbsparepart = new javax.swing.JComboBox();
         kd_spa = new javax.swing.JTextField();
         txjumlah = new javax.swing.JTextField();
+        kode_mekakanik = new javax.swing.JTextField();
         jPanel7 = new javax.swing.JPanel();
         txNo = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
@@ -436,6 +376,8 @@ HashMap param = new HashMap();
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(kd_spa, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(kode_mekakanik, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(tambahItem, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(hapusItem))
@@ -469,13 +411,14 @@ HashMap param = new HashMap();
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txStok, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel15))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(kd_spa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(kd_spa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(kode_mekakanik, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(50, 50, 50))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(tambahItem)
                             .addComponent(hapusItem))
@@ -565,9 +508,7 @@ HashMap param = new HashMap();
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(9, 9, 9))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                        .addComponent(txNo, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                    .addComponent(txNo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cbplg, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -777,16 +718,10 @@ HashMap param = new HashMap();
     }// </editor-fold>//GEN-END:initComponents
 
     private void cbmekanikActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbmekanikActionPerformed
-        tampilMekanik(); // TODO add your handling code here:
     }//GEN-LAST:event_cbmekanikActionPerformed
 
     private void cbmekanikMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cbmekanikMouseClicked
-//        if (cbmekanik.getSelectedItem() != "Mekanik"){
-//            txjumlah.setEnabled(true);
-//            tambahItem.setEnabled(true);
-//        }else{
-//
-//        }
+
     }//GEN-LAST:event_cbmekanikMouseClicked
 
     private void hapusItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hapusItemActionPerformed
@@ -813,7 +748,7 @@ HashMap param = new HashMap();
             Statement stat = conn.createStatement();
             ResultSet hasil = stat.executeQuery(sql);
             while(hasil.next()){
-                  kd_p.setText(hasil.getString("kd_pelanggan"));
+                  kd_p.setText(hasil.getString("id_pelanggan"));
             }
             hasil.close();
             stat.close();
@@ -829,7 +764,7 @@ HashMap param = new HashMap();
             Statement stat = conn.createStatement();
             ResultSet hasil = stat.executeQuery(sql);
             while(hasil.next()){
-                  kd_meka.setText(hasil.getString("kd_mekanik"));
+                  kd_meka.setText(hasil.getString("id_mekanik"));
             }
             hasil.close();
             stat.close();
@@ -848,7 +783,8 @@ HashMap param = new HashMap();
                   txHarga.setText(hasil.getString("harga"));
                   txStok.setText(hasil.getString("stok"));
                   txongkos.setText(hasil.getString("ongkos"));
-                  kd_spa.setText(hasil.getString("kd_sparepart"));
+                  kd_spa.setText(hasil.getString("id_sparepart"));
+                  kode_mekakanik.setText(hasil.getString("kd_sparepart"));
             }
             hasil.close();
             stat.close();
@@ -887,11 +823,15 @@ HashMap param = new HashMap();
             String noPolisi = txnopol.getText();
             String kd_mekanik = kd_meka.getText();
             String keluhan = txkeluhan.getText();
-            String kd_user = Login_m.getId_login();
+            String kd_user = Login_m.getUsername();
             Date date= new Date();
             long time = date.getTime();
             Timestamp strDate = new Timestamp(time);
        // DATA UNTUK HEADER
+            
+            if(kd_pelanggan.equals("") || noPolisi.equals("")||kd_mekanik.equals("") ||keluhan.equals("")) {
+                 JOptionPane.showMessageDialog(null, "Kolom Header Tidak Boleh Kosong");
+            }
             
        // MULAI INSERT K DATABASE
             if(bayar >= total) {
@@ -900,9 +840,9 @@ HashMap param = new HashMap();
                    JOptionPane.showMessageDialog(null, "Data Sparepart Kosong");
                 }else{
                     // INSERT HEADER DULU
-                       String sql = "INSERT INTO service_motor (no_faktur,kd_pelanggan,kd_mekanik,no_polisi,keluhan,kd_user,total) VALUES (?,?,?,?,?,?,?)";
+                       String sql = "INSERT INTO service_motor (no_faktur,kd_pelanggan,kd_mekanik,no_polisi,keluhan,kasir,total) VALUES (?,?,?,?,?,?,?)";
                         try {
-                            PreparedStatement stat = conn.prepareStatement(sql);
+                            PreparedStatement stat = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
                             stat.setString(1, no_faktur);
                             stat.setString(2, kd_pelanggan);
                             stat.setString(3, kd_mekanik);
@@ -911,27 +851,38 @@ HashMap param = new HashMap();
                             stat.setString(6, kd_user);
                             stat.setString(7, txTotal.getText());
                             stat.executeUpdate();
+                            
+                            ResultSet rs = stat.getGeneratedKeys();
+                            if (rs.next()) {
+                                id_service = rs.getString(1);
+                            }
+                            
+
                         } catch (SQLException e) {
                             JOptionPane.showMessageDialog(null, "Data Gagal Disimpan "+e);
                         }
+                        
                     // INSERT HEADER DULU
                         
                     // INSERT DETAILNYA
-                       for(int i = 0; i < tabmode.getRowCount(); i++){
-                          String a = tabmode.getValueAt(i, 0).toString(); // KODE SPAREPART
-                          String b = tabmode.getValueAt(i, 2).toString(); // HARGA
-                          String c = tabmode.getValueAt(i, 3).toString(); // JUMLAH
-                          String d = tabmode.getValueAt(i, 4).toString(); // ONGKOS
-                          String e = tabmode.getValueAt(i, 5).toString(); // SUB TOTAL
+                       for(int i = 0; i < jTable1.getRowCount(); i++){
+                          String a = jTable1.getValueAt(i, 0).toString(); // KODE SPAREPART
+                          String b = jTable1.getValueAt(i, 3).toString(); // HARGA
+                          String c = jTable1.getValueAt(i, 4).toString(); // JUMLAH
+                          String d = jTable1.getValueAt(i, 5).toString(); // ONGKOS
+                          String e = jTable1.getValueAt(i, 6).toString(); // SUB TOTAL
                           
                           // MULAIN INSERT DETAIL
-                            String sql1 = "INSERT INTO detail_service (kd_sparepart, harga, jumlah, no_faktur, ongkos, subtotal) VALUES(?,?,?,?,?,?)";
+                          
+                          // CARI DULU ID HEADERNYA
+                          
+                            String sql1 = "INSERT INTO detail_service (id_sparepart, harga, jumlah, id_service, ongkos, subtotal) VALUES(?,?,?,?,?,?)";
                               try {
                                   PreparedStatement stat1 = conn.prepareStatement(sql1);
                                   stat1.setString(1, a);
                                   stat1.setString(2, b);
                                   stat1.setString(3, c);
-                                  stat1.setString(4, no_faktur);
+                                  stat1.setString(4, id_service);
                                   stat1.setString(5, d);
                                   stat1.setString(6, e);
                                   stat1.executeUpdate();
@@ -941,7 +892,7 @@ HashMap param = new HashMap();
                           // MULAI INSERT DETAIL
                               
                         // UPDATE STOK
-                            String sql2 = "INSERT INTO stok (kd_sparepart,qty,jenis,created_by,keterangan) VALUES (?,?,?,?,?)";
+                            String sql2 = "INSERT INTO stok (id_sparepart,qty,jenis,created_by,keterangan) VALUES (?,?,?,?,?)";
                                 try {
                                     PreparedStatement stat2 = conn.prepareStatement(sql2);
                                     stat2.setString(1, a);
@@ -955,22 +906,41 @@ HashMap param = new HashMap();
                                 }
                           // UPDATE STOK
                                 
-                          // CETAK STRUK
-                                try {
-                                        File report = new File("C:\\Users\\mardi\\Documents\\NetBeansProjects\\aplikasi_bengkel\\src\\report\\cetak.jrxml");
-                                        jd = JRXmlLoader.load(report);
-//                                        param.clear();
-                                        param.put("no_faktur",txNo.getText());
-                                        jr = JasperCompileManager.compileReport(jd);
-                                        jp = JasperFillManager.fillReport(jr, param, conn);
-                                        JasperViewer.viewReport(jp, false);
-                                    } catch (JRException h) {
-                                        JOptionPane.showMessageDialog(null, h);
-                                    }
-                          // CETAK STRUK
+                          
                           
                           
                        }
+                       
+                       // CETAK STRUK
+                       java.sql.Connection con = null;
+                       try {
+                           String jdbcDriver =  "com.mysql.jdbc.Driver";
+                           Class.forName(jdbcDriver);
+                           
+                           String url = "jdbc:mysql://localhost:3306/bengkel";
+                           String user = "root";
+                           String password = "";
+                           
+                           con = DriverManager.getConnection(url,user,password);
+                           Statement stm = con.createStatement();
+
+    try {
+                                 String report= ("C:\\Users\\mardi\\Documents\\"
+                                         + "NetBeansProjects\\aplikasi_bengkel\\src\\"
+                                         + "report_new\\cetak_nota.jrxml");
+                                 HashMap hash = new HashMap();
+                                 hash.put("no_faktur", no_faktur);
+                                 JasperReport JRpt = JasperCompileManager.compileReport(getClass().getResourceAsStream("/report_new/cetak_nota.jrxml"));
+                                 JasperPrint jasperPrint = JasperFillManager.fillReport(JRpt,hash,con);
+                                 JasperViewer.viewReport(jasperPrint,false);
+                                    } catch (Exception jrreport) {
+                                        JOptionPane.showMessageDialog(null, jrreport);
+                                    }
+                       } catch(Exception au) {
+                            JOptionPane.showMessageDialog(null, au);
+                       }
+                                
+                          // CETAK STRUK
 //                    
                     // INSERT DETAILNYA
                        
@@ -1068,6 +1038,7 @@ HashMap param = new HashMap();
     private javax.swing.JTextField kd_meka;
     private javax.swing.JTextField kd_p;
     private javax.swing.JTextField kd_spa;
+    private javax.swing.JTextField kode_mekakanik;
     private javax.swing.JButton tambahItem;
     private javax.swing.JTextField txBayar;
     private javax.swing.JTextField txHarga;

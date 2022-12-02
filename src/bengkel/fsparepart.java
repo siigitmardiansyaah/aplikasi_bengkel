@@ -38,20 +38,25 @@ public class fsparepart extends javax.swing.JInternalFrame {
     @SuppressWarnings("unchecked")
     
      private void datatable() {
-        Object[] Baris = {"Kode Sparepart", "Nama Sparepart", "Harga", "Stok", "Ongkos"};
+        Object[] Baris = {"ID Sparepart","Kode Sparepart", "Nama Sparepart", "Harga", "Stok", "Ongkos"};
         tabmode = new DefaultTableModel(null, Baris);
         tblsparepart.setModel(tabmode);
+        tblsparepart.getColumnModel().getColumn(0).setWidth(0);
+        tblsparepart.getColumnModel().getColumn(0).setMinWidth(0);
+        tblsparepart.getColumnModel().getColumn(0).setMaxWidth(0);
+
         String sql = "select * from sparepart order by kd_sparepart ASC";
         try {
             Statement stat = conn.createStatement();
             ResultSet hasil = stat.executeQuery(sql);
             while (hasil.next()) {
+                String id = hasil.getString("id_sparepart");
                 String kode = hasil.getString("kd_sparepart");
                 String nama = hasil.getString("nm_sparepart");
                 String stok = hasil.getString("stok");
                 String harga = hasil.getString("harga");
                 String ongkos = hasil.getString("ongkos");
-                String[] data = {kode,nama,harga,stok,ongkos};
+                String[] data = {id,kode,nama,harga,stok,ongkos};
                 tabmode.addRow(data);
             }
         } catch (Exception e) {
@@ -73,10 +78,10 @@ public class fsparepart extends javax.swing.JInternalFrame {
     }
     
      private void kosong() {
+            autoNumber();
             txnama.setText("");
             txharga.setText("");
             txongkos.setText("");
-            tambah.setEnabled(true);      
     }
      
      private void autoNumber() {
@@ -426,7 +431,6 @@ public class fsparepart extends javax.swing.JInternalFrame {
             String sql = "update sparepart set nm_sparepart=?, harga=?, ongkos=? where kd_sparepart='"+txkode.getText()+"'";
             try {
                 PreparedStatement stat = conn.prepareStatement(sql);
-
                 stat.setString(1, txnama.getText());
                 stat.setString(2, txharga.getText());
                 stat.setString(3, txongkos.getText());
@@ -437,7 +441,12 @@ public class fsparepart extends javax.swing.JInternalFrame {
                 kosong();
             } catch (SQLException e) {
                 JOptionPane.showMessageDialog(null, "Data Sparepart Gagal Di Update" + e);
+                update.setText("EDIT");
             }
+            tambah.setEnabled(true);
+            update.setEnabled(true);
+            hapus.setEnabled(true);
+            batal.setEnabled(false);
         }
     }//GEN-LAST:event_updateActionPerformed
 
@@ -460,8 +469,9 @@ public class fsparepart extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_hapusActionPerformed
 
     private void batalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_batalActionPerformed
-String tambah1 = tambah.getText().toString();
-       String update1 = update.getText().toString();
+
+       String tambah1 = tambah.getText().toString();
+       String update1 = update.getText();
         
         if (tambah1.equals("SIMPAN")) {
             tambah.setText("TAMBAH");
@@ -469,7 +479,6 @@ String tambah1 = tambah.getText().toString();
             txkode.requestFocus();
             kosong();
             non_aktif();
-            autoNumber();
             update.setEnabled(true);
             hapus.setEnabled(true);
             batal.setEnabled(false);
@@ -479,7 +488,6 @@ String tambah1 = tambah.getText().toString();
             txkode.requestFocus();
             kosong();
             non_aktif();
-            autoNumber();
             tambah.setEnabled(true);
             hapus.setEnabled(true);
             batal.setEnabled(false);
@@ -489,11 +497,11 @@ String tambah1 = tambah.getText().toString();
     private void tblsparepartMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblsparepartMouseClicked
 
         int bar = tblsparepart.getSelectedRow();
-        String a = tabmode.getValueAt(bar, 0).toString();
-        String b = tabmode.getValueAt(bar, 1).toString();
-        String c = tabmode.getValueAt(bar, 2).toString();
-        String d = tabmode.getValueAt(bar, 3).toString();
-        String e = tabmode.getValueAt(bar, 4).toString();
+        String a = tabmode.getValueAt(bar, 1).toString();
+        String b = tabmode.getValueAt(bar, 2).toString();
+        String c = tabmode.getValueAt(bar, 3).toString();
+        String d = tabmode.getValueAt(bar, 4).toString();
+        String e = tabmode.getValueAt(bar, 5).toString();
         txkode.setText(a);
         txnama.setText(b);
         txharga.setText(c);
@@ -510,7 +518,6 @@ String tambah1 = tambah.getText().toString();
         String tombol = tambah.getText();
         if (tombol.equals("TAMBAH")) {
             aktif();
-            autoNumber();
             kosong();
             tambah.setText("SIMPAN");
             update.setEnabled(false);
@@ -522,26 +529,24 @@ String tambah1 = tambah.getText().toString();
             } else if(txharga.getText().matches("\\d+\\.\\d+") || txongkos.getText().matches("\\d+\\.\\d+") ){
             JOptionPane.showMessageDialog(null, "Kolom Harga / Stok / Ongkos Tidak Boleh Menggunakan Huruf");
             } else {
-            String sql = "insert into sparepart values(?,?,?,?,?)";
+            String sql = "insert into sparepart (kd_sparepart,nm_sparepart,harga,ongkos) values(?,?,?,?)";
             try {
                 PreparedStatement stat = conn.prepareStatement(sql);
                 stat.setString(1, txkode.getText());
                 stat.setString(2, txnama.getText());
                 stat.setDouble(3, Double.parseDouble(txharga.getText()));
-                stat.setDouble(5, Double.parseDouble(txongkos.getText()));
+                stat.setDouble(4, Double.parseDouble(txongkos.getText()));
                 stat.executeUpdate();
                 JOptionPane.showMessageDialog(null, "Data sparepart Berhasil Disimpan");
-                kosong();
-                autoNumber();
-                txkode.requestFocus();
-                datatable();
             } catch (SQLException e) {
                 JOptionPane.showConfirmDialog(null, "Data sparepart gagal disimpan" + e);
             }
             tambah.setText("TAMBAH");
+            tambah.setEnabled(true);
             non_aktif();
             kosong();
-            autoNumber();
+            txkode.requestFocus();
+            datatable();
             update.setEnabled(true);
             hapus.setEnabled(true);
             batal.setEnabled(false);
@@ -561,21 +566,25 @@ String tambah1 = tambah.getText().toString();
           JOptionPane.showMessageDialog(null, "Kolom Pencarian Tidak Boleh Kosong"); 
        } else {
         if (tombol.equals("Cari")){
-         Object[] Baris = {"Kode Sparepart", "Nama Sparepart", "Harga", "Stok", "Ongkos"};
+        Object[] Baris = {"ID Sparepart","Kode Sparepart", "Nama Sparepart", "Harga", "Stok", "Ongkos"};
         tabmode = new DefaultTableModel(null, Baris);
         tblsparepart.setModel(tabmode);
+        tblsparepart.getColumnModel().getColumn(0).setWidth(0);
+        tblsparepart.getColumnModel().getColumn(0).setMinWidth(0);
+        tblsparepart.getColumnModel().getColumn(0).setMaxWidth(0);
         String sql = "Select * from sparepart where kd_sparepart like '%" + txtCari.getText() + "%'" +
             "or nm_sparepart like '%" + txtCari.getText() + "%'";
         try {
             Statement stat = conn.createStatement();
             ResultSet hasil = stat.executeQuery(sql);
             if (hasil.next()) {
+                String id = hasil.getString("id_sparepart");
                 String kode = hasil.getString("kd_sparepart");
                 String nama = hasil.getString("nm_sparepart");
                 String stok = hasil.getString("stok");
                 String harga = hasil.getString("harga");
                 String ongkos = hasil.getString("ongkos");
-                String[] data = {kode,nama,harga,stok, ongkos};
+                String[] data = {id,kode,nama,harga,stok, ongkos};
                 tabmode.addRow(data);
                     btnCari.setText("Batal");
                     tambah.setEnabled(true);

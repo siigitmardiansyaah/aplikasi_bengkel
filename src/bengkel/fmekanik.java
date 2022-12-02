@@ -1,5 +1,6 @@
 
 package bengkel;
+import java.awt.HeadlessException;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -45,19 +46,24 @@ HashMap param = new HashMap();
     @SuppressWarnings("unchecked")
     
     private void datatable() {
-        Object[] Baris = {"Kode", "Nama", "Alamat", "Telepon"};
+        Object[] Baris = {"ID Mekanik", "Kode Mekanik", "Nama", "Alamat", "Telepon"};
         tabmode = new DefaultTableModel(null, Baris);
         tblmekanik.setModel(tabmode);
-        String sql = "select * from mekanik";
+        tblmekanik.getColumnModel().getColumn(0).setWidth(0);
+        tblmekanik.getColumnModel().getColumn(0).setMinWidth(0);
+        tblmekanik.getColumnModel().getColumn(0).setMaxWidth(0);
+
+        String sql = "select * from mekanik order by kd_mekanik ASC";
         try {
             Statement stat = conn.createStatement();
             ResultSet hasil = stat.executeQuery(sql);
             while (hasil.next()) {
+                String id = hasil.getString("id_mekanik");
                 String kode = hasil.getString("kd_mekanik");
                 String nama = hasil.getString("nm_mekanik");
                 String alamat = hasil.getString("alamat");
                 String telepon = hasil.getString("no_telepon");
-                String[] data = {kode,nama,alamat,telepon};
+                String[] data = {id,kode,nama,alamat,telepon};
                 tabmode.addRow(data);
             }
         } catch (Exception e) {
@@ -109,8 +115,7 @@ HashMap param = new HashMap();
                 txkode.setText("MK0001");
             }
             rs.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException | NumberFormatException e) {
         }
     }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -374,9 +379,9 @@ HashMap param = new HashMap();
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtCari, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnCari))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnCari, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtCari))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -416,20 +421,24 @@ HashMap param = new HashMap();
            JOptionPane.showMessageDialog(null, "Kolom Pencarian Harus Di Isi");
         } else {
         if (tombol.equals("Cari")){
-            Object[] Baris = {"Kode", "Nama", "Alamat", "Telepon"};
+            Object[] Baris = {"ID Mekanik","Kode Mekanik", "Nama", "Alamat", "Telepon"};
             tabmode = new DefaultTableModel(null, Baris);
             tblmekanik.setModel(tabmode);
+            tblmekanik.getColumnModel().getColumn(0).setWidth(0);
+            tblmekanik.getColumnModel().getColumn(0).setMaxWidth(0);
+            tblmekanik.getColumnModel().getColumn(0).setMinWidth(0);
             String sql = "Select * from mekanik where kd_mekanik like '%" + txtCari.getText() + "%'" +
             "or nm_mekanik like '%" + txtCari.getText() + "%'";
             try {
                 Statement stat = conn.createStatement();
                 ResultSet hasil = stat.executeQuery(sql);
                 if(hasil.next()) {
+                    String id = hasil.getString("id_mekanik");
                     String kode = hasil.getString("kd_mekanik");
                     String nama = hasil.getString("nm_mekanik");
                     String alamat = hasil.getString("alamat");
                     String telepon = hasil.getString("no_telepon");
-                    String[] data = {kode,nama,alamat,telepon};
+                    String[] data = {id,kode,nama,alamat,telepon};
                     btnCari.setText("Batal");
                     tabmode.addRow(data);
                     tambah.setEnabled(true);
@@ -446,7 +455,7 @@ HashMap param = new HashMap();
                     hapus.setEnabled(true);
                     batal.setEnabled(false);
                 }
-            } catch (Exception e) {
+            } catch (SQLException | HeadlessException e) {
                 datatable();
                 tambah.setEnabled(true);
                 update.setEnabled(true);
@@ -469,10 +478,10 @@ HashMap param = new HashMap();
         update.setText("EDIT");
         hapus.setEnabled(true);
         int bar = tblmekanik.getSelectedRow();
-        String a = tabmode.getValueAt(bar, 0).toString();
-        String b = tabmode.getValueAt(bar, 1).toString();
-        String c = tabmode.getValueAt(bar, 2).toString();
-        String d = tabmode.getValueAt(bar, 3).toString();
+        String a = tabmode.getValueAt(bar, 1).toString();
+        String b = tabmode.getValueAt(bar, 2).toString();
+        String c = tabmode.getValueAt(bar, 3).toString();
+        String d = tabmode.getValueAt(bar, 4).toString();
         txkode.setText(a);
         txnama.setText(b);
         txalamat.setText(c);
@@ -508,8 +517,8 @@ HashMap param = new HashMap();
     }//GEN-LAST:event_keluarActionPerformed
 
     private void batalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_batalActionPerformed
-        String tambah1 = tambah.getText().toString();
-        String update1 = update.getText().toString();
+        String tambah1 = tambah.getText();
+        String update1 = update.getText();
 
         if (tambah1.equals("SIMPAN")) {
             tambah.setText("TAMBAH");
@@ -517,7 +526,6 @@ HashMap param = new HashMap();
             txkode.requestFocus();
             kosong();
             non_aktif();
-            autoNumber();
             update.setEnabled(true);
             hapus.setEnabled(true);
             batal.setEnabled(false);
@@ -527,7 +535,6 @@ HashMap param = new HashMap();
             txkode.requestFocus();
             kosong();
             non_aktif();
-            autoNumber();
             tambah.setEnabled(true);
             hapus.setEnabled(true);
             batal.setEnabled(false);
@@ -536,7 +543,7 @@ HashMap param = new HashMap();
 
     private void updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateActionPerformed
 
-        if (update.getText()=="EDIT") {
+        if (update.getText().equals("EDIT")) {
             aktif();
             update.setText("UPDATE");
             hapus.setEnabled(false);
@@ -575,7 +582,7 @@ HashMap param = new HashMap();
             hapus.setEnabled(false);
             batal.setEnabled(true);
         } else {
-            String sql = "insert into mekanik values(?,?,?,?)";
+            String sql = "insert into mekanik(kd_mekanik,nm_mekanik,alamat,no_telepon) values(?,?,?,?)";
             if (txkode.getText() == null || txnama.getText() == null || txalamat.getText() == null || txtelepon.getText() == null ) {
                 JOptionPane.showMessageDialog(null, "Kolom Tidak Boleh Kosong");
             }else {

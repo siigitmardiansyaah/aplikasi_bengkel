@@ -1,63 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="595" pageHeight="700" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="61ca2907-9a2b-4f9a-981e-8af0efd83c65">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="790" pageHeight="700" whenNoDataType="AllSectionsNoDetail" columnWidth="750" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="61ca2907-9a2b-4f9a-981e-8af0efd83c65">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="114"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="no_faktur" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT
-     service_motor.`no_faktur` AS service_motor_no_faktur,
-     service_motor.`tanggal` AS service_motor_tanggal,
-     service_motor.`kd_pelanggan` AS service_motor_kd_pelanggan,
-     service_motor.`kd_mekanik` AS service_motor_kd_mekanik,
-     service_motor.`no_polisi` AS service_motor_no_polisi,
-     service_motor.`keluhan` AS service_motor_keluhan,
-     detail_service.`kd_sparepart` AS detail_service_kd_sparepart,
-     detail_service.`harga` AS detail_service_harga,
-     detail_service.`jumlah` AS detail_service_jumlah,
-     detail_service.`no_faktur` AS detail_service_no_faktur,
-     detail_service.`ongkos` AS detail_service_ongkos,
-     detail_service.`subtotal` AS detail_service_subtotal
-FROM
-     `service_motor` service_motor,
-     `detail_service` detail_service]]>
+a.no_faktur as service_motor_no_faktur,
+DATE_FORMAT(a.tanggal, '%d-%m-%Y') as service_motor_tanggal,
+c.nm_pelanggan as service_motor_kd_pelanggan,
+d.nm_mekanik as service_motor_kd_mekanik,
+a.no_polisi as service_motor_no_polisi,
+a.keluhan as service_motor_keluhan,
+e.kd_sparepart as detail_service_kd_sparepart,
+e.nm_sparepart as detail_service_nm_sparepart,
+b.harga as detail_service_harga,
+b.jumlah as detail_service_jumlah,
+b.ongkos as detail_service_ongkos,
+b.subtotal as detail_service_subtotal,
+a.total as service_motor_total,
+a.kasir
+FROM service_motor a
+join detail_service b on a.id_service = b.id_service
+join pelanggan c on a.kd_pelanggan = c.id_pelanggan
+join mekanik d on a.kd_mekanik = d.id_mekanik
+join sparepart e on b.id_sparepart = e.id_sparepart
+where a.no_faktur = '20221200001']]>
 	</queryString>
 	<field name="service_motor_no_faktur" class="java.lang.String"/>
-	<field name="service_motor_tanggal" class="java.sql.Date"/>
+	<field name="service_motor_tanggal" class="java.lang.String"/>
 	<field name="service_motor_kd_pelanggan" class="java.lang.String"/>
 	<field name="service_motor_kd_mekanik" class="java.lang.String"/>
 	<field name="service_motor_no_polisi" class="java.lang.String"/>
 	<field name="service_motor_keluhan" class="java.lang.String"/>
 	<field name="detail_service_kd_sparepart" class="java.lang.String"/>
+	<field name="detail_service_nm_sparepart" class="java.lang.String"/>
 	<field name="detail_service_harga" class="java.lang.Integer"/>
 	<field name="detail_service_jumlah" class="java.lang.Integer"/>
-	<field name="detail_service_no_faktur" class="java.lang.String"/>
 	<field name="detail_service_ongkos" class="java.lang.Integer"/>
 	<field name="detail_service_subtotal" class="java.lang.Integer"/>
+	<field name="service_motor_total" class="java.lang.Float"/>
+	<field name="kasir" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<variable name="detail_service_subtotal_1" class="java.lang.Integer" resetType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$F{detail_service_subtotal}]]></variableExpression>
+	</variable>
 	<title>
 		<band height="94" splitType="Stretch">
 			<rectangle>
-				<reportElement x="0" y="0" width="555" height="91" backcolor="#CCCCFF" uuid="a9a90623-d7cc-4d6b-975f-0b4e7dcf4b8b"/>
+				<reportElement x="0" y="0" width="750" height="91" backcolor="#CCCCFF" uuid="a9a90623-d7cc-4d6b-975f-0b4e7dcf4b8b"/>
 				<graphicElement>
 					<pen lineWidth="3.5" lineStyle="Double"/>
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement x="11" y="11" width="530" height="28" uuid="c65cd1fb-0a2c-478f-ba66-605f83128424"/>
+				<reportElement x="11" y="11" width="729" height="28" uuid="c65cd1fb-0a2c-478f-ba66-605f83128424"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="22" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Nota Pembayaran Service Mobil Toyota]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="11" y="39" width="530" height="24" uuid="30e7ace0-118e-43c7-9349-24ca5ae92bf0"/>
+				<reportElement x="11" y="39" width="729" height="24" uuid="30e7ace0-118e-43c7-9349-24ca5ae92bf0"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="18" isBold="false"/>
 				</textElement>
 				<text><![CDATA[PLAZA TOYOTA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="11" y="63" width="530" height="20" uuid="5c30527f-cc43-428e-8187-315a870f90f4"/>
+				<reportElement x="11" y="63" width="729" height="20" uuid="5c30527f-cc43-428e-8187-315a870f90f4"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14"/>
 				</textElement>
@@ -68,28 +80,28 @@ FROM
 	<pageHeader>
 		<band height="59" splitType="Stretch">
 			<rectangle radius="10">
-				<reportElement x="0" y="7" width="555" height="47" backcolor="#E5E5E5" uuid="242dff22-a2b4-4551-b410-1a0ad7993859"/>
+				<reportElement x="0" y="0" width="750" height="47" backcolor="#E5E5E5" uuid="242dff22-a2b4-4551-b410-1a0ad7993859"/>
 				<graphicElement>
 					<pen lineWidth="3.0" lineStyle="Double"/>
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement x="11" y="17" width="146" height="29" uuid="aa651ada-4c9d-4c05-a5d0-67f906fa56ce"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
+				<reportElement x="11" y="17" width="104" height="29" uuid="aa651ada-4c9d-4c05-a5d0-67f906fa56ce"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="18" isBold="true"/>
 				</textElement>
 				<text><![CDATA[No Faktur  :]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="319" y="17" width="222" height="29" uuid="1b7296c7-786e-4a79-8be7-b76dadcbfbb1"/>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="518" y="17" width="222" height="29" uuid="1b7296c7-786e-4a79-8be7-b76dadcbfbb1"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="17" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{service_motor_tanggal}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="157" y="17" width="162" height="29" uuid="b620ecc6-f2c5-4549-a317-ff4b81c3151a"/>
-				<textElement textAlignment="Center">
+				<reportElement x="115" y="17" width="231" height="29" uuid="b620ecc6-f2c5-4549-a317-ff4b81c3151a"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="16" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{service_motor_no_faktur}]]></textFieldExpression>
@@ -97,9 +109,9 @@ FROM
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="349" splitType="Stretch">
+		<band height="379" splitType="Stretch">
 			<rectangle>
-				<reportElement x="0" y="5" width="555" height="339" backcolor="#F3F3F3" uuid="88be1aca-3d69-4e09-9e50-bbb6c01a2467"/>
+				<reportElement x="0" y="0" width="750" height="379" backcolor="#F3F3F3" uuid="88be1aca-3d69-4e09-9e50-bbb6c01a2467"/>
 				<graphicElement>
 					<pen lineWidth="3.0" lineStyle="Double"/>
 				</graphicElement>
@@ -126,14 +138,14 @@ FROM
 				<text><![CDATA[No Polisi  :]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="171" y="19" width="246" height="20" uuid="53da8930-cc46-4a33-ba00-95be97c30cf0"/>
+				<reportElement x="171" y="15" width="246" height="20" uuid="53da8930-cc46-4a33-ba00-95be97c30cf0"/>
 				<textElement>
 					<font size="14" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{service_motor_kd_pelanggan}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="171" y="41" width="246" height="20" uuid="f103f9dc-9ca8-4ef8-87d4-c294b0d87f88"/>
+				<reportElement x="171" y="39" width="246" height="20" uuid="f103f9dc-9ca8-4ef8-87d4-c294b0d87f88"/>
 				<textElement>
 					<font size="14" isBold="true"/>
 				</textElement>
@@ -154,87 +166,129 @@ FROM
 				<text><![CDATA[keluhan  :]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="171" y="83" width="370" height="20" uuid="56b9ba6a-106b-463e-b60c-70f46f53dd9d"/>
+				<reportElement x="171" y="83" width="569" height="20" uuid="56b9ba6a-106b-463e-b60c-70f46f53dd9d"/>
 				<textElement>
 					<font size="14" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{service_motor_keluhan}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="11" y="112" width="530" height="1" uuid="da1a9e54-4a93-444c-9381-a0e8db063e3f"/>
+				<reportElement x="11" y="112" width="729" height="1" uuid="da1a9e54-4a93-444c-9381-a0e8db063e3f"/>
 				<graphicElement>
 					<pen lineWidth="3.0" lineStyle="Double"/>
 				</graphicElement>
 			</line>
 			<staticText>
-				<reportElement x="11" y="123" width="107" height="22" uuid="8e0c0e0b-70ee-42a0-8c1f-773747158453"/>
-				<textElement textAlignment="Right">
+				<reportElement x="86" y="123" width="107" height="22" uuid="8e0c0e0b-70ee-42a0-8c1f-773747158453"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Kode Sperpart]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="118" y="123" width="107" height="22" uuid="de00166f-27a3-4e72-88b4-ee179dc4c978"/>
-				<textElement textAlignment="Center">
+				<reportElement x="319" y="123" width="107" height="22" uuid="de00166f-27a3-4e72-88b4-ee179dc4c978"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Harga]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="225" y="123" width="107" height="22" uuid="3fcac407-6ea5-40e3-9ecc-d541221baa2c"/>
-				<textElement textAlignment="Center">
+				<reportElement x="426" y="123" width="107" height="22" uuid="3fcac407-6ea5-40e3-9ecc-d541221baa2c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Jumlah]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="332" y="123" width="107" height="22" uuid="bf38946d-9945-4550-b865-5323d8e1ad95"/>
-				<textElement textAlignment="Center">
+				<reportElement x="533" y="123" width="107" height="22" uuid="bf38946d-9945-4550-b865-5323d8e1ad95"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Biaya Pasang]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="439" y="123" width="107" height="22" uuid="1c01c019-6c1a-4711-835e-ac8e3b868755"/>
-				<textElement textAlignment="Center">
+				<reportElement x="640" y="123" width="107" height="22" uuid="1c01c019-6c1a-4711-835e-ac8e3b868755"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Sub Total]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="18" y="161" width="100" height="158" uuid="13bc34a2-468a-4213-96dd-ffc511f12853"/>
+				<reportElement x="86" y="161" width="100" height="158" uuid="13bc34a2-468a-4213-96dd-ffc511f12853"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{detail_service_kd_sparepart}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="125" y="161" width="100" height="158" uuid="6c04deb7-1b23-4372-81ec-9d224361409a"/>
+				<reportElement x="326" y="161" width="100" height="158" uuid="6c04deb7-1b23-4372-81ec-9d224361409a"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{detail_service_harga}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="231" y="161" width="100" height="158" uuid="b501e441-448c-4389-8f3b-e4362ef417cf"/>
+				<reportElement x="433" y="161" width="100" height="158" uuid="b501e441-448c-4389-8f3b-e4362ef417cf"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{detail_service_jumlah}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="339" y="161" width="100" height="158" uuid="dcf9a0e0-c0f8-490a-b7e8-8ea8ceac9ede"/>
+				<reportElement x="540" y="161" width="100" height="158" uuid="dcf9a0e0-c0f8-490a-b7e8-8ea8ceac9ede"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{detail_service_ongkos}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="446" y="161" width="100" height="158" uuid="94477820-2b95-4738-b956-9f53f1e895fd"/>
+				<reportElement x="647" y="161" width="100" height="158" uuid="94477820-2b95-4738-b956-9f53f1e895fd"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{detail_service_subtotal}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="540" y="335" width="100" height="22" uuid="b94a76a6-2f69-465d-ac96-301b2663f1ee"/>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="193" y="123" width="126" height="22" uuid="1fd8af8b-3015-4aa9-8416-2dcd15697ea7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nama Sparepart]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="193" y="161" width="126" height="158" uuid="3907958b-22d4-4091-b46a-105201916dbd"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detail_service_nm_sparepart}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="11" y="123" width="75" height="22" uuid="ed68ac4d-573f-4390-bbd4-8b2326f6d86e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[No]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="11" y="161" width="75" height="158" uuid="47508a43-a60d-4487-8bb6-7c9dba35accd"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="650" y="335" width="97" height="20" uuid="42bd8761-980c-4544-acab-1ecc4a06a981"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{service_motor_total}]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnHeader>
@@ -248,7 +302,7 @@ FROM
 				<text><![CDATA[Petugas/Admin]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="417" y="97" width="101" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="a5adc2d0-d4c9-4004-a8aa-248c120c4595"/>
+				<reportElement mode="Opaque" x="647" y="97" width="101" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="a5adc2d0-d4c9-4004-a8aa-248c120c4595"/>
 				<textElement textAlignment="Center">
 					<font fontName="Agency FB" size="12" isBold="false"/>
 				</textElement>
@@ -262,24 +316,32 @@ FROM
 				<text><![CDATA[Mengetahui]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="417" y="37" width="101" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="ea8cbf2c-86fc-45db-9b1a-d6853672be09"/>
+				<reportElement mode="Opaque" x="640" y="37" width="101" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="ea8cbf2c-86fc-45db-9b1a-d6853672be09"/>
 				<textElement textAlignment="Center">
 					<font fontName="Agency FB" size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Mengetahui]]></text>
 			</staticText>
 			<line>
-				<reportElement x="7" y="25" width="539" height="1" uuid="042d3440-18f1-40d8-8c0f-02ea24f2e60d"/>
+				<reportElement x="7" y="26" width="740" height="1" uuid="042d3440-18f1-40d8-8c0f-02ea24f2e60d"/>
 				<graphicElement>
 					<pen lineWidth="2.25" lineStyle="Double"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement x="7" y="127" width="539" height="1" uuid="1a29a68c-43fc-4362-bee1-51ba117f0de6"/>
+				<reportElement x="7" y="128" width="740" height="1" uuid="1a29a68c-43fc-4362-bee1-51ba117f0de6"/>
 				<graphicElement>
 					<pen lineWidth="2.25" lineStyle="Double"/>
 				</graphicElement>
 			</line>
+			<textField>
+				<reportElement x="648" y="77" width="100" height="20" uuid="77e844bc-3ec1-4c7b-bc0a-cbbbded236ce"/>
+				<textFieldExpression><![CDATA[$F{service_motor_kd_pelanggan}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="37" y="77" width="100" height="20" uuid="f4675851-c3cb-4ccc-9f06-9fc86d050d92"/>
+				<textFieldExpression><![CDATA[$F{kasir}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 </jasperReport>

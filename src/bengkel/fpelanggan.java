@@ -34,19 +34,23 @@ public class fpelanggan extends javax.swing.JInternalFrame {
     @SuppressWarnings("unchecked")
     
      private void datatable() {
-        Object[] Baris = {"Kode", "Nama", "Alamat", "No_Telepon"};
+        Object[] Baris = {"ID Pelanggan","Kode", "Nama", "Alamat", "No_Telepon"};
         tabmode = new DefaultTableModel(null, Baris);
         tblpelanggan.setModel(tabmode);
-        String sql = "select * from pelanggan";
+        tblpelanggan.getColumnModel().getColumn(0).setWidth(0);        
+        tblpelanggan.getColumnModel().getColumn(0).setMinWidth(0);
+        tblpelanggan.getColumnModel().getColumn(0).setMaxWidth(0);
+        String sql = "select * from pelanggan order by kd_pelanggan ASC";
         try {
             Statement stat = conn.createStatement();
             ResultSet hasil = stat.executeQuery(sql);
             while (hasil.next()) {
+                String id = hasil.getString("id_pelanggan");
                 String kode = hasil.getString("kd_pelanggan");
                 String nama = hasil.getString("nm_pelanggan");
                 String alamat = hasil.getString("alamat");
                 String telepon = hasil.getString("no_telepon");
-                String[] data = {kode,nama,alamat,telepon};
+                String[] data = {id,kode,nama,alamat,telepon};
                 tabmode.addRow(data);
             }
         } catch (Exception e) {
@@ -74,7 +78,7 @@ public class fpelanggan extends javax.swing.JInternalFrame {
         autoNumber();
     }
      
-         private void autoNumber() {
+      private void autoNumber() {
         try {
             String sql = "SELECT * FROM pelanggan ORDER BY kd_pelanggan DESC";
             PreparedStatement stat = conn.prepareCall(sql);
@@ -167,6 +171,17 @@ public class fpelanggan extends javax.swing.JInternalFrame {
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel5.setText("NO TELEPON");
+
+        txtelepon.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txteleponActionPerformed(evt);
+            }
+        });
+        txtelepon.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txteleponKeyTyped(evt);
+            }
+        });
 
         txalamat.setColumns(20);
         txalamat.setRows(5);
@@ -354,9 +369,9 @@ public class fpelanggan extends javax.swing.JInternalFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(1, 1, 1)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtCari, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnCari))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnCari, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtCari))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -389,20 +404,24 @@ public class fpelanggan extends javax.swing.JInternalFrame {
            JOptionPane.showMessageDialog(null, "Kolom Pencarian Tidak Boleh Kosong");
         } else {
         if (tombol.equals("Cari")){
-            Object[] Baris = {"Kode", "Nama", "Alamat", "No_Telepon"};
+            Object[] Baris = {"ID Pelanggan","Kode", "Nama", "Alamat", "No_Telepon"};
             tabmode = new DefaultTableModel(null, Baris);
             tblpelanggan.setModel(tabmode);
+            tblpelanggan.getColumnModel().getColumn(0).setWidth(0);
+            tblpelanggan.getColumnModel().getColumn(0).setMinWidth(0);
+            tblpelanggan.getColumnModel().getColumn(0).setMaxWidth(0);
             String sql = "Select * from pelanggan where kd_pelanggan like '%" + txtCari.getText() + "%'" +
             "or nm_pelanggan like '%" + txtCari.getText() + "%'";
             try {
                 Statement stat = conn.createStatement();
                 ResultSet hasil = stat.executeQuery(sql);
                 if (hasil.next()) {
+                    String id = hasil.getString("id_pelanggan");
                     String kode = hasil.getString("kd_pelanggan");
                     String nama = hasil.getString("nm_pelanggan");
                     String alamat = hasil.getString("alamat");
                     String telepon = hasil.getString("no_telepon");
-                    String[] data = {kode,nama,alamat,telepon};
+                    String[] data = {id,kode,nama,alamat,telepon};
                     tabmode.addRow(data);
                     btnCari.setText("Batal");
                     tambah.setEnabled(true);
@@ -488,7 +507,7 @@ public class fpelanggan extends javax.swing.JInternalFrame {
             if(txnama.getText().equals("") || txalamat.getText().equals("") || txtelepon.getText().equals("")) {
                JOptionPane.showMessageDialog(null, "Kolom Tidak Boleh Kosong");
             }else{
-            String sql = "insert into pelanggan values(?,?,?,?)";
+            String sql = "insert into pelanggan (kd_pelanggan,nm_pelanggan,alamat,no_telepon) values(?,?,?,?)";
             try {
                 PreparedStatement stat = conn.prepareStatement(sql);
                 stat.setString(1, txkode.getText());
@@ -497,6 +516,9 @@ public class fpelanggan extends javax.swing.JInternalFrame {
                 stat.setString(4, txtelepon.getText());
                 stat.executeUpdate();
                 JOptionPane.showMessageDialog(null, "Data pelanggan Berhasil Disimpan");
+            } catch (SQLException e) {
+                JOptionPane.showConfirmDialog(null, "Data pelanggan gagal disimpan" + e);
+            }
                 kosong();
                 txkode.requestFocus();
                 datatable();
@@ -506,10 +528,6 @@ public class fpelanggan extends javax.swing.JInternalFrame {
                 update.setEnabled(true);
                 hapus.setEnabled(true);
                 batal.setEnabled(false);
-            } catch (SQLException e) {
-                JOptionPane.showConfirmDialog(null, "Data pelanggan gagal disimpan" + e);
-            }
-
             }
 
         }
@@ -531,25 +549,26 @@ public class fpelanggan extends javax.swing.JInternalFrame {
                 stat.setString(3, txtelepon.getText());
                 stat.executeUpdate();
                 JOptionPane.showMessageDialog(null, "Data pelanggan berhasil Di Update");
-                update.setText("EDIT");
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, "Data Pelanggan Gagal Di Update" + e);
+            }
+            update.setText("EDIT");
                 datatable();
+                non_aktif();
                 kosong();
                 hapus.setEnabled(true);
                 tambah.setEnabled(true);
                 batal.setEnabled(false);
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, "Data Pelanggan Gagal Di Update" + e);
-            }
         }
     }//GEN-LAST:event_updateActionPerformed
 
     private void tblpelangganMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblpelangganMouseClicked
         // TODO add your handling code here:
-         int bar = tblpelanggan.getSelectedRow();
-        String a = tabmode.getValueAt(bar, 0).toString();
-        String b = tabmode.getValueAt(bar, 1).toString();
-        String c = tabmode.getValueAt(bar, 2).toString();
-        String d = tabmode.getValueAt(bar, 3).toString();
+        int bar = tblpelanggan.getSelectedRow();
+        String a = tabmode.getValueAt(bar, 1).toString();
+        String b = tabmode.getValueAt(bar, 2).toString();
+        String c = tabmode.getValueAt(bar, 3).toString();
+        String d = tabmode.getValueAt(bar, 4).toString();
         txkode.setText(a);
         txnama.setText(b);
         txalamat.setText(c);
@@ -561,6 +580,18 @@ public class fpelanggan extends javax.swing.JInternalFrame {
         tambah.setEnabled(true);
         non_aktif();
     }//GEN-LAST:event_tblpelangganMouseClicked
+
+    private void txteleponActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txteleponActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txteleponActionPerformed
+
+    private void txteleponKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txteleponKeyTyped
+        // TODO add your handling code here:
+                char enter = evt.getKeyChar();
+        if(!(Character.isDigit(enter))){
+            evt.consume();
+        }
+    }//GEN-LAST:event_txteleponKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

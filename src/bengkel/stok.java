@@ -7,9 +7,14 @@
 package bengkel;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import model.Login_m;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 /**
  *
@@ -18,37 +23,81 @@ import javax.swing.table.DefaultTableModel;
 public class stok extends javax.swing.JInternalFrame {
 
     /**
-     * Creates new form stok_in
+     * Creates new form 
      */
       private Connection conn = new Koneksi().connect();
       private DefaultTableModel tabmode;
-    public stok() {
-        initComponents();
-        ((javax.swing.plaf.basic.BasicInternalFrameUI)getUI()).setNorthPane(null);
-        datatable();
-    }
+      private String id_sparepart = "";
+      
+        public stok() {
+            ((javax.swing.plaf.basic.BasicInternalFrameUI)getUI()).setNorthPane(null);
+            initComponents();
+            datatable();
+            tampilSparepart();
+            AutoCompleteDecorator.decorate(cbsparepart);
+            non_aktif();
+        }
     
          private void datatable() {
         Object[] Baris = {"Tanggal", "Nama Sparepart", "Qty", "Jenis", "Keterangan","Ditambahkan Oleh"};
         tabmode = new DefaultTableModel(null, Baris);
-        jTable1.setModel(tabmode);
-        String sql = "select DATE_FORMAT(a.tanggal,'%d/%m/%Y') as tanggal,c.nm_sparepart,b.username,a.qty,a.jenis,a.keterangan from stok a join login b on a.created_by = b.id_login join sparepart c on a.kd_sparepart = b.kd_sparepart order by a.tanggal desc";
+        tblstok.setModel(tabmode);
+        String sql = "select DATE_FORMAT(a.tanggal,'%d/%m/%Y') as tanggal,b.nm_sparepart,a.created_by,a.qty,a.jenis,a.keterangan from stok a join sparepart b on a.id_sparepart = b.id_sparepart order by a.tanggal desc";
         try {
             Statement stat = conn.createStatement();
             ResultSet hasil = stat.executeQuery(sql);
             while (hasil.next()) {
                 String tanggal = hasil.getString("tanggal");
                 String nm_sparepart = hasil.getString("nm_sparepart");
-                String username = hasil.getString("username");
+                String created_by = hasil.getString("created_by");
                 String qty = hasil.getString("qty");
                 String jenis = hasil.getString("jenis");
-                String keterangan = hasil.getString("keterangan");
-                String[] data = {tanggal,nm_sparepart,qty,jenis,keterangan,username};
+                String keterangan1 = hasil.getString("keterangan");
+                String[] data = {tanggal,nm_sparepart,qty,jenis,keterangan1,created_by};
                 tabmode.addRow(data);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
         }
     }
+         
+      private void tampilSparepart(){
+        String sql = "SELECT * FROM sparepart order by nm_sparepart asc";
+        try {
+            Statement stat = conn.createStatement();
+            ResultSet hasil = stat.executeQuery(sql);
+            while(hasil.next()){
+                cbsparepart.addItem(hasil.getString("nm_sparepart"));
+            }
+            hasil.close();
+            stat.close();
+            } catch (SQLException ex) {
+        }
+      }
+        
+        private void non_aktif() {
+            cbsparepart.setEnabled(false);
+            txkode.setEnabled(false);
+            cbjenis.setEnabled(false);
+            keterangan.setEnabled(false);
+            batal.setEnabled(false);
+            txjmlah.setEnabled(false);
+        }
+        
+        private void aktif() {
+            cbsparepart.setEnabled(true);
+            cbjenis.setEnabled(true);
+            keterangan.setEnabled(true);
+            batal.setEnabled(true);
+            txjmlah.setEnabled(true);
+        }
+        
+        private void kosong() {
+            cbsparepart.setSelectedItem("Pilih Sparepart");
+            cbjenis.setSelectedItem("Pilih Jenis");
+            txkode.setText("");
+            keterangan.setText("");
+            txjmlah.setText("");
+        }
 
 
     /**
@@ -63,23 +112,27 @@ public class stok extends javax.swing.JInternalFrame {
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblstok = new javax.swing.JTable();
+        txcari = new javax.swing.JTextField();
+        btnCari = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
+        cbsparepart = new javax.swing.JComboBox();
         jLabel3 = new javax.swing.JLabel();
         txkode = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox();
+        cbjenis = new javax.swing.JComboBox();
         jLabel5 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
-        jButton1 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        keterangan = new javax.swing.JTextArea();
+        tambah = new javax.swing.JButton();
+        batal = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        txjmlah = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Stock Masuk");
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Data Stock");
 
         jLabel1.setBackground(new java.awt.Color(204, 204, 204));
         jLabel1.setFont(new java.awt.Font("Serif", 1, 24)); // NOI18N
@@ -90,7 +143,7 @@ public class stok extends javax.swing.JInternalFrame {
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
         jPanel1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblstok.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -101,7 +154,15 @@ public class stok extends javax.swing.JInternalFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblstok);
+
+        btnCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/001-search.png"))); // NOI18N
+        btnCari.setText("Cari");
+        btnCari.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCariActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -109,14 +170,23 @@ public class stok extends javax.swing.JInternalFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 769, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 769, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(txcari, javax.swing.GroupLayout.PREFERRED_SIZE, 657, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnCari, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 520, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txcari, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCari, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1)
                 .addContainerGap())
         );
 
@@ -126,7 +196,12 @@ public class stok extends javax.swing.JInternalFrame {
         jLabel2.setFont(new java.awt.Font("Serif", 1, 14)); // NOI18N
         jLabel2.setText("Nama Sparepart");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbsparepart.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Pilih Sparepart" }));
+        cbsparepart.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbsparepartItemStateChanged(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Serif", 1, 14)); // NOI18N
         jLabel3.setText("Kode Sparepart");
@@ -134,31 +209,50 @@ public class stok extends javax.swing.JInternalFrame {
         jLabel4.setFont(new java.awt.Font("Serif", 1, 14)); // NOI18N
         jLabel4.setText("Jenis");
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Pilih Jenis", "IN", "OUT" }));
+        cbjenis.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Pilih Jenis", "IN", "OUT" }));
 
         jLabel5.setFont(new java.awt.Font("Serif", 1, 14)); // NOI18N
         jLabel5.setText("Keterangan");
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane2.setViewportView(jTextArea1);
+        keterangan.setColumns(20);
+        keterangan.setRows(5);
+        jScrollPane2.setViewportView(keterangan);
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/002-plus.png"))); // NOI18N
-        jButton1.setText("TAMBAH");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        tambah.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        tambah.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/002-plus.png"))); // NOI18N
+        tambah.setText("TAMBAH");
+        tambah.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                tambahActionPerformed(evt);
             }
         });
 
-        jButton3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/005-cancel.png"))); // NOI18N
-        jButton3.setText("BATAL");
+        batal.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        batal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/005-cancel.png"))); // NOI18N
+        batal.setText("BATAL");
+        batal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                batalActionPerformed(evt);
+            }
+        });
 
         jButton4.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/012-undo.png"))); // NOI18N
         jButton4.setText("KEMBALI");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setFont(new java.awt.Font("Serif", 1, 14)); // NOI18N
+        jLabel6.setText("Jumlah");
+
+        txjmlah.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txjmlahKeyTyped(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -169,24 +263,28 @@ public class stok extends javax.swing.JInternalFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5))
-                        .addGap(22, 22, 22))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(18, 18, 18)))
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                        .addGap(12, 12, 12)
-                        .addComponent(jButton4))
-                    .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txkode)
-                    .addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2))
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel3)
+                                        .addComponent(jLabel4)
+                                        .addComponent(jLabel5))
+                                    .addGap(22, 22, 22))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                    .addComponent(jLabel2)
+                                    .addGap(18, 18, 18)))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addGap(71, 71, 71)))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cbsparepart, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txkode)
+                            .addComponent(cbjenis, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane2)
+                            .addComponent(txjmlah)))
+                    .addComponent(tambah, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(batal, javax.swing.GroupLayout.DEFAULT_SIZE, 535, Short.MAX_VALUE)
+                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -194,29 +292,34 @@ public class stok extends javax.swing.JInternalFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(29, 29, 29)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbsparepart, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txkode, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
-                .addGap(7, 7, 7)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6)
+                    .addComponent(txjmlah, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cbjenis, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(55, 55, 55)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(78, 78, 78)
                         .addComponent(jLabel5)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton4)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton1)
-                        .addComponent(jButton3)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(tambah)
+                .addGap(18, 18, 18)
+                .addComponent(batal)
+                .addGap(18, 18, 18)
+                .addComponent(jButton4)
+                .addContainerGap(40, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -239,18 +342,159 @@ public class stok extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void tambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+        String tambah1 = tambah.getText();
+        if(tambah1.equals("TAMBAH")) {
+            aktif();
+            tambah.setText("SIMPAN");
+        } else {
+            String id_spare = id_sparepart;
+            String jeniss = cbjenis.getSelectedItem().toString();
+            String jumlah = txjmlah.getText();
+            String user = Login_m.getUsername();
+            String ket = keterangan.getText();
+            if(id_spare.equals("") || jeniss.equals("Pilih Jenis") || jumlah.equals("")) {
+                JOptionPane.showMessageDialog(null, "Kolom Harus Di Isi");
+            } else {
+                if (jeniss.equals("IN")) {
+                    String sql = "insert into stok (id_sparepart,qty,jenis,created_by,keterangan) values(?,?,?,?,?)";
+                    try {
+                        PreparedStatement stat = conn.prepareStatement(sql);
+                        stat.setString(1, id_spare);
+                        stat.setString(2, jumlah);
+                        stat.setString(3, jeniss);
+                        stat.setString(4, user);
+                        stat.setString(5, ket);
+                        stat.executeUpdate();
+                        JOptionPane.showMessageDialog(null, "Data Stok Masuk Berhasil Disimpan");
+                    } catch (SQLException e) {
+                        JOptionPane.showConfirmDialog(null, "Data Stok Masuk gagal disimpan" + e);
+                    }
+                } else {
+                    if(ket.equals("")) {
+                      JOptionPane.showMessageDialog(null, "Ketika Memilih Jenis Stoknya OUT Maka Keterangan Wajib Di Isi");
+                    }else{
+                        String sql = "insert into stok (id_sparepart,qty,jenis,created_by,keterangan) values(?,?,?,?,?)";
+                    try {
+                        PreparedStatement stat = conn.prepareStatement(sql);
+                        stat.setString(1, id_spare);
+                        stat.setString(2, jumlah);
+                        stat.setString(3, jeniss);
+                        stat.setString(4, user);
+                        stat.setString(5, ket);
+                        stat.executeUpdate();
+                        JOptionPane.showMessageDialog(null, "Data Stok Keluar Berhasil Disimpan");
+                    } catch (SQLException e) {
+                        JOptionPane.showConfirmDialog(null, "Data Stok Keluar gagal disimpan" + e);
+                    }
+                    }
+                }
+            }
+            tambah.setText("Tambah");
+            kosong();
+            non_aktif();
+            datatable();
+        }
+    }//GEN-LAST:event_tambahActionPerformed
+
+    private void batalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_batalActionPerformed
+        // TODO add your handling code here:
+        kosong();
+        non_aktif();
+        tambah.setText("TAMBAH");
+    }//GEN-LAST:event_batalActionPerformed
+
+    private void cbsparepartItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbsparepartItemStateChanged
+        // TODO add your handling code here:
+        String nm_sparepart = cbsparepart.getSelectedItem().toString();
+        String sql = "SELECT * FROM sparepart where nm_sparepart = '" + nm_sparepart + "'";
+        try {
+            Statement stat = conn.createStatement();
+            ResultSet hasil = stat.executeQuery(sql);
+            while(hasil.next()){
+                  txkode.setText(hasil.getString("kd_sparepart"));
+                  id_sparepart = hasil.getString("id_sparepart");
+            }
+            hasil.close();
+            stat.close();
+            } catch (SQLException ex) {
+        }         
+    }//GEN-LAST:event_cbsparepartItemStateChanged
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        dispose();
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void btnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCariActionPerformed
+        // TODO add your handling code here:
+        String carii = btnCari.getText();
+        String texxt = txcari.getText();
+        if(texxt.equals("")) {
+           JOptionPane.showMessageDialog(null, "Kolom Pencarian Harus Di Isi");
+        }else{
+            if(carii.equals("Cari")) {
+            Object[] Baris = {"Tanggal", "Nama Sparepart", "Qty", "Jenis", "Keterangan","Ditambahkan Oleh"};
+            tabmode = new DefaultTableModel(null, Baris);
+            tblstok.setModel(tabmode);
+            String sql = "select DATE_FORMAT(a.tanggal,'%d/%m/%Y') as tanggal,b.nm_sparepart,"
+                    + "a.created_by,a.qty,a.jenis,a.keterangan "
+                    + "from stok a "
+                    + "join sparepart b on a.id_sparepart = b.id_sparepart "
+                    + " where b.nm_sparepart like '%" +texxt+"' OR b.kd_sparepart like '%"+texxt+"'"
+                    + "order by a.tanggal desc";
+
+            try {
+                Statement stat = conn.createStatement();
+                ResultSet hasil = stat.executeQuery(sql);
+                if (hasil.next()) {
+                    String tanggal = hasil.getString("tanggal");
+                    String nm_sparepart = hasil.getString("nm_sparepart");
+                    String created_by = hasil.getString("created_by");
+                    String qty = hasil.getString("qty");
+                    String jenis = hasil.getString("jenis");
+                    String keterangan1 = hasil.getString("keterangan");
+                    String[] data = {tanggal,nm_sparepart,qty,jenis,keterangan1,created_by};
+                    tabmode.addRow(data);
+                    btnCari.setText("Batal");
+                    tambah.setEnabled(true);
+                    batal.setEnabled(false);
+                }else{
+                    datatable();
+                    btnCari.setText("Cari");
+                    txcari.setText("");
+                    tambah.setEnabled(true);
+                    batal.setEnabled(false);
+                }
+            } catch (SQLException e) {
+            }
+            }else{
+                datatable();
+                btnCari.setText("Cari");
+                txcari.setText("");
+                tambah.setEnabled(true);
+                batal.setEnabled(false);
+            }
+        }
+    }//GEN-LAST:event_btnCariActionPerformed
+
+    private void txjmlahKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txjmlahKeyTyped
+        // TODO add your handling code here:
+                char enter = evt.getKeyChar();
+        if(!(Character.isDigit(enter))){
+            evt.consume();
+        }
+    }//GEN-LAST:event_txjmlahKeyTyped
 
     /**
      * @param args the command line arguments
@@ -258,22 +502,26 @@ public class stok extends javax.swing.JInternalFrame {
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton batal;
+    private javax.swing.JButton btnCari;
+    private javax.swing.JComboBox cbjenis;
+    private javax.swing.JComboBox cbsparepart;
     private javax.swing.JButton jButton4;
-    private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JComboBox jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea keterangan;
+    private javax.swing.JButton tambah;
+    private javax.swing.JTable tblstok;
+    private javax.swing.JTextField txcari;
+    private javax.swing.JTextField txjmlah;
     private javax.swing.JTextField txkode;
     // End of variables declaration//GEN-END:variables
 }

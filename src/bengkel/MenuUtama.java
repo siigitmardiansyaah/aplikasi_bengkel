@@ -2,11 +2,11 @@ package bengkel;
 
 import com.mysql.jdbc.Statement;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -38,9 +38,9 @@ public class MenuUtama extends javax.swing.JFrame {
         id_login = Login_m.getId_login();
         status = Login_m.getStatus();
         tgl.setText(tanggal);
+        txtnama.setText(username);
         setJam();
         info();
-        datatable();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         
         setVisible(true);
@@ -87,40 +87,11 @@ this.setLocation(x, y);
         new Timer(1000, taskPerformer).start();
     }
     
-        private void datatable() {
-        Object[] Baris = {"Kode Faktur", "Tanggal Transaksi", "Nama", "Nama Mekanik","Total"};
-        tabmode = new DefaultTableModel(null, Baris);
-        tbl_transaksi.setModel(tabmode);
-        String sql = "select a.no_faktur,DATE_FORMAT(a.tanggal,'%d/%m/%Y') as tanggal,b.nm_pelanggan,c.nm_mekanik,a.keluhan, (SELECT sum(subtotal) from detail_service where no_faktur = a.no_faktur) as harga "
-                + "from service_motor a "
-                + "join pelanggan b on a.kd_pelanggan = b.kd_pelanggan"
-                + "join mekanik c on a.kd_mekanik = c.kd_mekanik"
-                + "where DATE_FORMAT(a.tanggal,'%d/%m/%Y') = '" + tanggal + "'"
-                + "order by a.tanggal desc";
-        try {
-            java.sql.Statement stat = conn.createStatement();
-            ResultSet hasil = stat.executeQuery(sql);
-            if (hasil.next()) {
-                String no_faktur = hasil.getString("no_faktur");
-                String tanggal1 = hasil.getString("tanggal");
-                String nm_pelanggan = hasil.getString("nm_pelanggan");
-                String nm_mekanik = hasil.getString("nm_mekanik");
-                String keluhan = hasil.getString("keluhan");
-                String harga = hasil.getString("harga");
-                
-                String[] data = {no_faktur,tanggal1,nm_pelanggan,nm_mekanik,keluhan,harga};
-                tabmode.addRow(data);
-            } else{
-                JOptionPane.showMessageDialog(null,"Kosong");
-            }
-        } catch (SQLException e) {
-        }
-    }
         
         private void info() {
             String sql = "SELECT IFNULL(COUNT(*),0) as total FROM service_motor where DATE_FORMAT(tanggal,'%d/%m/%Y') = '" + tanggal + "'";
             String sql1 = "SELECT IFNULL(SUM(b.subtotal),0) as total FROM service_motor a "
-                    + "join detail_service b on a.no_faktur = b.no_faktur "
+                    + "join detail_service b on a.id_service = b.id_service "
                     + "where DATE_FORMAT(a.tanggal,'%d/%m/%Y') = '" + tanggal + "'";
             String sql2 = "SELECT IFNULL(COUNT(*),0) as total FROM sparepart";
             try {
@@ -132,10 +103,12 @@ this.setLocation(x, y);
             ResultSet hasil2 = stat1.executeQuery(sql1);
             ResultSet hasil3 = stat2.executeQuery(sql2);
 
-            while (hasil.next()) {
+            if (hasil.next()) {
                 txt_servis.setText(hasil.getString("total"));
+            } else {
+                txt_servis.setText("0");
             }
-            while (hasil2.next()) {
+            if(hasil2.next()) {
                 String duit = hasil2.getString("total");
                 double duit1 = Double.parseDouble(duit);
                 DecimalFormat kursIndonesia = (DecimalFormat) DecimalFormat.getCurrencyInstance();
@@ -148,9 +121,24 @@ this.setLocation(x, y);
                 kursIndonesia.setDecimalFormatSymbols(formatRp);
                 
                 txt_duit.setText(kursIndonesia.format(duit1));
+            }else{
+                String duit = "0";
+                double duit1 = Double.parseDouble(duit);
+                DecimalFormat kursIndonesia = (DecimalFormat) DecimalFormat.getCurrencyInstance();
+                DecimalFormatSymbols formatRp = new DecimalFormatSymbols();
+
+                formatRp.setCurrencySymbol("Rp. ");
+                formatRp.setMonetaryDecimalSeparator(',');
+                formatRp.setGroupingSeparator('.');
+
+                kursIndonesia.setDecimalFormatSymbols(formatRp);
+                
+                txt_duit.setText(kursIndonesia.format(duit1));
             }
-            while (hasil3.next()) {
+            if (hasil3.next()) {
                 txt_spare.setText(hasil3.getString("total"));
+            }else{
+                txt_spare.setText("0");
             }
             } catch (Exception e) {
                 
@@ -191,9 +179,8 @@ this.setLocation(x, y);
         txt_spare = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tbl_transaksi = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
+        txtnama = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -389,21 +376,8 @@ this.setLocation(x, y);
                 .addContainerGap())
         );
 
-        jLabel6.setFont(new java.awt.Font("Serif", 1, 14)); // NOI18N
-        jLabel6.setText("TRANSAKSI HARI INI");
-
-        tbl_transaksi.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane1.setViewportView(tbl_transaksi);
+        jLabel6.setFont(new java.awt.Font("Serif", 1, 36)); // NOI18N
+        jLabel6.setText("SELAMAT DATANG ");
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/013-refresh.png"))); // NOI18N
         jButton1.setText("Refresh");
@@ -413,31 +387,37 @@ this.setLocation(x, y);
             }
         });
 
+        txtnama.setFont(new java.awt.Font("Serif", 1, 36)); // NOI18N
+        txtnama.setText("NAMA");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(txtnama)
+                .addGap(448, 448, 448))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1))))
+                        .addGap(335, 335, 335))))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(jLabel6))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(5, 5, 5)
-                        .addComponent(jButton1)))
+                .addContainerGap()
+                .addComponent(jButton1)
+                .addGap(138, 138, 138)
+                .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE))
+                .addComponent(txtnama)
+                .addContainerGap(224, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout dpLayout = new javax.swing.GroupLayout(dp);
@@ -712,12 +692,6 @@ this.setLocation(x, y);
        }
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:info();
-        datatable();
-        info();
-    }//GEN-LAST:event_jButton1ActionPerformed
-
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
         // TODO add your handling code here:
          if(status.equals("Gudang") || status.equals("Admin")) {
@@ -781,6 +755,11 @@ this.setLocation(x, y);
        }
     }//GEN-LAST:event_jMenuItem16ActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:info();
+        info();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     public static void main(String args[]) {
          
      }
@@ -825,13 +804,12 @@ this.setLocation(x, y);
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbluser;
     private javax.swing.JLabel lblwktu;
-    private javax.swing.JTable tbl_transaksi;
     private javax.swing.JLabel tgl;
     private javax.swing.JLabel txt_duit;
     private javax.swing.JLabel txt_servis;
     private javax.swing.JLabel txt_spare;
+    private javax.swing.JLabel txtnama;
     // End of variables declaration//GEN-END:variables
 }
