@@ -11,7 +11,7 @@ public class FormLogin extends javax.swing.JFrame {
     Koneksi k = new Koneksi();
     ResultSet resultset;
     Statement statement;
-    String id_login,username,status,email;
+    String id_login,username,status,email,nama;
    
     public FormLogin() {
         initComponents();
@@ -229,6 +229,7 @@ public class FormLogin extends javax.swing.JFrame {
                 username = r.getString("username");
                 status = r.getString("status");
                 email = r.getString("email");
+                nama = r.getString("nama");
             }
             r.last();
             

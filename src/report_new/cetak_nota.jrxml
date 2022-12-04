@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="700" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="660" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e013bc01-c0a7-4cca-a555-535aac80fb0a">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="201"/>
+	<property name="ireport.x" value="277"/>
 	<property name="ireport.y" value="283"/>
 	<parameter name="no_faktur" class="java.lang.String"/>
 	<queryString>
@@ -21,12 +21,13 @@ b.jumlah as jumlah,
 b.ongkos as ongkos,
 b.subtotal as subtotal,
 a.total as total,
-a.kasir
+f.nama as kasir
 FROM service_motor a
 join detail_service b on a.id_service = b.id_service
 join pelanggan c on a.kd_pelanggan = c.id_pelanggan
 join mekanik d on a.kd_pelanggan = d.id_mekanik
 join sparepart e on b.id_sparepart = e.id_sparepart
+join login f on a.kasir = f.id_login
 where a.no_faktur = $P{no_faktur}]]>
 	</queryString>
 	<field name="no_faktur" class="java.lang.String">
@@ -74,9 +75,7 @@ where a.no_faktur = $P{no_faktur}]]>
 	<field name="total" class="java.lang.Float">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="kasir" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
+	<field name="kasir" class="java.lang.String"/>
 	<variable name="subtotal_1" class="java.lang.Integer" resetType="Column" calculation="Sum">
 		<variableExpression><![CDATA[$F{subtotal}]]></variableExpression>
 	</variable>

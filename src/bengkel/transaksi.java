@@ -823,7 +823,7 @@ public class transaksi extends javax.swing.JInternalFrame {
             String noPolisi = txnopol.getText();
             String kd_mekanik = kd_meka.getText();
             String keluhan = txkeluhan.getText();
-            String kd_user = Login_m.getUsername();
+            String kd_user = Login_m.getId_login();
             Date date= new Date();
             long time = date.getTime();
             Timestamp strDate = new Timestamp(time);
@@ -831,8 +831,7 @@ public class transaksi extends javax.swing.JInternalFrame {
             
             if(kd_pelanggan.equals("") || noPolisi.equals("")||kd_mekanik.equals("") ||keluhan.equals("")) {
                  JOptionPane.showMessageDialog(null, "Kolom Header Tidak Boleh Kosong");
-            }
-            
+            }else{       
        // MULAI INSERT K DATABASE
             if(bayar >= total) {
                 tabmode = (DefaultTableModel)jTable1.getModel();
@@ -953,6 +952,7 @@ public class transaksi extends javax.swing.JInternalFrame {
             }else{
                 JOptionPane.showMessageDialog(null, "Uang Anda Kurang");
                 txBayar.setText("");
+            }
             }
         // MULAI INSERT K DATABASE
 

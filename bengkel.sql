@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 02, 2022 at 09:50 AM
--- Server version: 10.4.24-MariaDB
--- PHP Version: 7.4.29
+-- Waktu pembuatan: 04 Des 2022 pada 16.37
+-- Versi server: 10.4.25-MariaDB
+-- Versi PHP: 8.0.23
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `detail_service`
+-- Struktur dari tabel `detail_service`
 --
 
 CREATE TABLE `detail_service` (
@@ -38,7 +38,7 @@ CREATE TABLE `detail_service` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `detail_service`
+-- Dumping data untuk tabel `detail_service`
 --
 
 INSERT INTO `detail_service` (`id_detail`, `id_sparepart`, `harga`, `jumlah`, `id_service`, `ongkos`, `subtotal`) VALUES
@@ -58,7 +58,7 @@ INSERT INTO `detail_service` (`id_detail`, `id_sparepart`, `harga`, `jumlah`, `i
 -- --------------------------------------------------------
 
 --
--- Table structure for table `login`
+-- Struktur dari tabel `login`
 --
 
 CREATE TABLE `login` (
@@ -66,22 +66,23 @@ CREATE TABLE `login` (
   `email` varchar(50) NOT NULL,
   `password` varchar(50) NOT NULL,
   `status` varchar(100) NOT NULL,
-  `id_login` varchar(10) NOT NULL
+  `id_login` varchar(10) NOT NULL,
+  `nama` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `login`
+-- Dumping data untuk tabel `login`
 --
 
-INSERT INTO `login` (`username`, `email`, `password`, `status`, `id_login`) VALUES
-('user', '123', '123', 'Gudang', 'LG0003'),
-('nasra', 'test@mail.com', 'test', 'Kasir', 'LG0004'),
-('sigit', 'mail.com', 'test', 'Admin', 'LG0005');
+INSERT INTO `login` (`username`, `email`, `password`, `status`, `id_login`, `nama`) VALUES
+('user', '123', '123', 'Gudang', 'LG0003', ''),
+('nasra', 'test@mail.com', 'test', 'Kasir', 'LG0004', ''),
+('sigit', 'mail.com', 'test', 'Admin', 'LG0005', '');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `mekanik`
+-- Struktur dari tabel `mekanik`
 --
 
 CREATE TABLE `mekanik` (
@@ -93,7 +94,7 @@ CREATE TABLE `mekanik` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `mekanik`
+-- Dumping data untuk tabel `mekanik`
 --
 
 INSERT INTO `mekanik` (`id_mekanik`, `kd_mekanik`, `nm_mekanik`, `alamat`, `no_telepon`) VALUES
@@ -103,7 +104,7 @@ INSERT INTO `mekanik` (`id_mekanik`, `kd_mekanik`, `nm_mekanik`, `alamat`, `no_t
 -- --------------------------------------------------------
 
 --
--- Table structure for table `pelanggan`
+-- Struktur dari tabel `pelanggan`
 --
 
 CREATE TABLE `pelanggan` (
@@ -115,7 +116,7 @@ CREATE TABLE `pelanggan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `pelanggan`
+-- Dumping data untuk tabel `pelanggan`
 --
 
 INSERT INTO `pelanggan` (`id_pelanggan`, `kd_pelanggan`, `nm_pelanggan`, `alamat`, `no_telepon`) VALUES
@@ -125,13 +126,13 @@ INSERT INTO `pelanggan` (`id_pelanggan`, `kd_pelanggan`, `nm_pelanggan`, `alamat
 -- --------------------------------------------------------
 
 --
--- Table structure for table `service_motor`
+-- Struktur dari tabel `service_motor`
 --
 
 CREATE TABLE `service_motor` (
   `id_service` int(11) NOT NULL,
   `no_faktur` varchar(25) NOT NULL,
-  `tanggal` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `tanggal` timestamp NOT NULL DEFAULT current_timestamp(),
   `kd_pelanggan` int(10) NOT NULL,
   `kd_mekanik` int(10) NOT NULL,
   `no_polisi` varchar(15) NOT NULL,
@@ -141,25 +142,25 @@ CREATE TABLE `service_motor` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `service_motor`
+-- Dumping data untuk tabel `service_motor`
 --
 
 INSERT INTO `service_motor` (`id_service`, `no_faktur`, `tanggal`, `kd_pelanggan`, `kd_mekanik`, `no_polisi`, `keluhan`, `kasir`, `total`) VALUES
-(4, '20221200001', '2022-12-02 03:48:29', 2, 2, '123123', '123131', 'sigit', 95000),
-(7, '20221200002', '2022-12-02 07:45:14', 1, 2, 'B 0001 FKH', 'TEST', 'sigit', 250000),
-(8, '20221200003', '2022-12-02 07:46:57', 1, 2, 'B 0001 C', 'dadas', 'sigit', 250000),
-(9, '20221200004', '2022-12-02 07:50:19', 1, 1, '123', '123', 'sigit', 250000),
-(10, '20221200005', '2022-12-02 07:58:18', 1, 2, 'dsada', 'dasdad', 'sigit', 250000),
-(11, '20221200006', '2022-12-02 08:23:54', 1, 2, '12', '12', 'sigit', 95000),
-(12, '20221200006', '2022-12-02 08:26:24', 1, 2, '12', '12', 'sigit', 95000),
-(13, '20221200007', '2022-12-02 08:27:51', 1, 1, '1231321', '13213213', 'sigit', 95000),
-(14, '20221200007', '2022-12-02 08:29:30', 1, 1, '1231321', '13213213', 'sigit', 95000),
-(15, '20221200008', '2022-12-02 08:30:43', 1, 1, '12', '12', 'sigit', 95000);
+(4, '20221200001', '2022-12-05 07:40:34', 2, 2, '123123', '123131', 'LG0003', 95000),
+(7, '20221200002', '2022-12-04 07:40:40', 1, 2, 'B 0001 FKH', 'TEST', 'LG0003', 250000),
+(8, '20221200003', '2022-12-04 07:41:07', 1, 2, 'B 0001 C', 'dadas', 'LG0003', 250000),
+(9, '20221200004', '2022-12-04 07:41:07', 1, 1, '123', '123', 'LG0003', 250000),
+(10, '20221200005', '2022-12-04 07:41:07', 1, 2, 'dsada', 'dasdad', 'LG0003', 250000),
+(11, '20221200006', '2022-12-04 07:41:07', 1, 2, '12', '12', 'LG0003', 95000),
+(12, '20221200006', '2022-12-04 07:41:07', 1, 2, '12', '12', 'LG0003', 95000),
+(13, '20221200007', '2022-12-04 07:41:07', 1, 1, '1231321', '13213213', 'LG0003', 95000),
+(14, '20221200007', '2022-12-04 07:41:07', 1, 1, '1231321', '13213213', 'LG0003', 95000),
+(15, '20221200008', '2022-12-04 07:41:07', 1, 1, '12', '12', 'LG0003', 95000);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `sparepart`
+-- Struktur dari tabel `sparepart`
 --
 
 CREATE TABLE `sparepart` (
@@ -172,7 +173,7 @@ CREATE TABLE `sparepart` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `sparepart`
+-- Dumping data untuk tabel `sparepart`
 --
 
 INSERT INTO `sparepart` (`id_sparepart`, `kd_sparepart`, `nm_sparepart`, `harga`, `stok`, `ongkos`) VALUES
@@ -183,7 +184,7 @@ INSERT INTO `sparepart` (`id_sparepart`, `kd_sparepart`, `nm_sparepart`, `harga`
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stok`
+-- Struktur dari tabel `stok`
 --
 
 CREATE TABLE `stok` (
@@ -197,7 +198,7 @@ CREATE TABLE `stok` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `stok`
+-- Dumping data untuk tabel `stok`
 --
 
 INSERT INTO `stok` (`id_stok`, `id_sparepart`, `qty`, `jenis`, `tanggal`, `created_by`, `keterangan`) VALUES
@@ -224,7 +225,7 @@ INSERT INTO `stok` (`id_stok`, `id_sparepart`, `qty`, `jenis`, `tanggal`, `creat
 (21, 3, 2, 'OUT', '2022-12-02 08:30:43', 'sigit', 'Terjual');
 
 --
--- Triggers `stok`
+-- Trigger `stok`
 --
 DELIMITER $$
 CREATE TRIGGER `stok_trigger` AFTER INSERT ON `stok` FOR EACH ROW BEGIN
@@ -245,7 +246,7 @@ DELIMITER ;
 --
 
 --
--- Indexes for table `detail_service`
+-- Indeks untuk tabel `detail_service`
 --
 ALTER TABLE `detail_service`
   ADD PRIMARY KEY (`id_detail`),
@@ -253,25 +254,25 @@ ALTER TABLE `detail_service`
   ADD KEY `fk_service` (`id_service`);
 
 --
--- Indexes for table `login`
+-- Indeks untuk tabel `login`
 --
 ALTER TABLE `login`
   ADD PRIMARY KEY (`id_login`);
 
 --
--- Indexes for table `mekanik`
+-- Indeks untuk tabel `mekanik`
 --
 ALTER TABLE `mekanik`
   ADD PRIMARY KEY (`id_mekanik`);
 
 --
--- Indexes for table `pelanggan`
+-- Indeks untuk tabel `pelanggan`
 --
 ALTER TABLE `pelanggan`
   ADD PRIMARY KEY (`id_pelanggan`);
 
 --
--- Indexes for table `service_motor`
+-- Indeks untuk tabel `service_motor`
 --
 ALTER TABLE `service_motor`
   ADD PRIMARY KEY (`id_service`),
@@ -279,78 +280,78 @@ ALTER TABLE `service_motor`
   ADD KEY `fk_pelanggan` (`kd_pelanggan`);
 
 --
--- Indexes for table `sparepart`
+-- Indeks untuk tabel `sparepart`
 --
 ALTER TABLE `sparepart`
   ADD PRIMARY KEY (`id_sparepart`);
 
 --
--- Indexes for table `stok`
+-- Indeks untuk tabel `stok`
 --
 ALTER TABLE `stok`
   ADD PRIMARY KEY (`id_stok`),
   ADD KEY `fk_sparepart` (`id_sparepart`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT untuk tabel yang dibuang
 --
 
 --
--- AUTO_INCREMENT for table `detail_service`
+-- AUTO_INCREMENT untuk tabel `detail_service`
 --
 ALTER TABLE `detail_service`
   MODIFY `id_detail` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
--- AUTO_INCREMENT for table `mekanik`
+-- AUTO_INCREMENT untuk tabel `mekanik`
 --
 ALTER TABLE `mekanik`
   MODIFY `id_mekanik` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `pelanggan`
+-- AUTO_INCREMENT untuk tabel `pelanggan`
 --
 ALTER TABLE `pelanggan`
   MODIFY `id_pelanggan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `service_motor`
+-- AUTO_INCREMENT untuk tabel `service_motor`
 --
 ALTER TABLE `service_motor`
   MODIFY `id_service` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
--- AUTO_INCREMENT for table `sparepart`
+-- AUTO_INCREMENT untuk tabel `sparepart`
 --
 ALTER TABLE `sparepart`
   MODIFY `id_sparepart` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT for table `stok`
+-- AUTO_INCREMENT untuk tabel `stok`
 --
 ALTER TABLE `stok`
   MODIFY `id_stok` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
--- Constraints for dumped tables
+-- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
 --
 
 --
--- Constraints for table `detail_service`
+-- Ketidakleluasaan untuk tabel `detail_service`
 --
 ALTER TABLE `detail_service`
   ADD CONSTRAINT `fk_service` FOREIGN KEY (`id_service`) REFERENCES `service_motor` (`id_service`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_sparepart1` FOREIGN KEY (`id_sparepart`) REFERENCES `sparepart` (`id_sparepart`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `service_motor`
+-- Ketidakleluasaan untuk tabel `service_motor`
 --
 ALTER TABLE `service_motor`
   ADD CONSTRAINT `fk_pelanggan` FOREIGN KEY (`kd_pelanggan`) REFERENCES `pelanggan` (`id_pelanggan`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `kd_meka` FOREIGN KEY (`kd_mekanik`) REFERENCES `mekanik` (`id_mekanik`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `stok`
+-- Ketidakleluasaan untuk tabel `stok`
 --
 ALTER TABLE `stok`
   ADD CONSTRAINT `fk_sparepart` FOREIGN KEY (`id_sparepart`) REFERENCES `sparepart` (`id_sparepart`) ON DELETE CASCADE ON UPDATE CASCADE;

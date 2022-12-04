@@ -377,6 +377,7 @@ this.setLocation(x, y);
         );
 
         jLabel6.setFont(new java.awt.Font("Serif", 1, 36)); // NOI18N
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel6.setText("SELAMAT DATANG ");
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/013-refresh.png"))); // NOI18N
@@ -388,25 +389,24 @@ this.setLocation(x, y);
         });
 
         txtnama.setFont(new java.awt.Font("Serif", 1, 36)); // NOI18N
+        txtnama.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         txtnama.setText("NAMA");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(txtnama)
-                .addGap(448, 448, 448))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jButton1)))
                         .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addGap(335, 335, 335))))
+                    .addComponent(txtnama, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -673,7 +673,7 @@ this.setLocation(x, y);
 
     private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
         if(status.equals("Kasir") || status.equals("Admin")) {
-                   laporan p= new laporan();
+                   Report_pelanggan p= new Report_pelanggan();
                     dp.add(p);
                     p.setVisible(true); 
         } else {
@@ -684,7 +684,7 @@ this.setLocation(x, y);
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         // TODO add your handling code here:
         if(status.equals("Admin") || status.equals("Kasir")) {
-            transaksi p= new transaksi();
+            history p= new history();
             dp.add(p);
             p.setVisible(true);  
        } else {
@@ -695,7 +695,7 @@ this.setLocation(x, y);
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
         // TODO add your handling code here:
          if(status.equals("Gudang") || status.equals("Admin")) {
-            transaksi p= new transaksi();
+            Report_sparepart p= new Report_sparepart();
             dp.add(p);
             p.setVisible(true);  
        } else {
@@ -706,7 +706,7 @@ this.setLocation(x, y);
     private void jMenuItem11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem11ActionPerformed
         // TODO add your handling code here:
          if(status.equals("Admin") || status.equals("Kasir")) {
-            transaksi p= new transaksi();
+            Report_mekanik p= new Report_mekanik();
             dp.add(p);
             p.setVisible(true);  
        } else {
@@ -717,7 +717,7 @@ this.setLocation(x, y);
     private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
         // TODO add your handling code here:
          if(status.equals("Admin") || status.equals("Kasir")) {
-            transaksi p= new transaksi();
+            Report_transaksi p= new Report_transaksi();
             dp.add(p);
             p.setVisible(true);  
        } else {
@@ -727,7 +727,7 @@ this.setLocation(x, y);
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         // TODO add your handling code here:
-            transaksi p= new transaksi();
+            profile p= new profile();
             dp.add(p);
             p.setVisible(true);  
        

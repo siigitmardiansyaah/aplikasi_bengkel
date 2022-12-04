@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="387de92d-6d25-4748-bc1e-45efad0a7d49">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="241"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="nama" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT * FROM mekanik order by  id_mekanik ASC]]>
+	</queryString>
+	<field name="id_mekanik" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="kd_mekanik" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nm_mekanik" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="alamat" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="no_telepon" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<title>
+		<band height="120" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="802" height="117" uuid="15c63bc0-dea1-45dd-bd55-99718ef9b835"/>
+				<graphicElement>
+					<pen lineWidth="3.0"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="156" y="10" width="238" height="40" uuid="46e4faa1-a1d6-4001-a865-edaa71a50cd9"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PLAZA TOYOTA KARANGGAN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="156" y="50" width="238" height="20" uuid="5ffa36f5-d80a-4726-aba6-6f4decdfc64a"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Jalan Raya Karanggan Tua No.85, Karanggan]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="156" y="73" width="360" height="20" uuid="e5d359cc-4e5d-46ab-9da7-53d98dc842d6"/>
+				<textElement verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Kec. Gn. Putri, Kabupaten Bogor, Jawa Barat 16961]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="156" y="93" width="360" height="20" uuid="6db6f750-3410-468c-b8a0-d5d421b4f5b4"/>
+				<textElement verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Telepon: (021) 87929409]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="99" splitType="Stretch">
+			<staticText>
+				<reportElement x="356" y="12" width="243" height="30" uuid="a63b9c59-009e-4065-9a3a-8f36fcce952b"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REPORT DATA MEKANIK]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="220" y="79" width="205" height="20" uuid="e19eb52e-0d5b-4c62-97a5-56c56c4b4c8b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nama Pelanggan]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="660" y="79" width="142" height="20" uuid="cb36716e-38dc-43ff-a331-e73aaa2436c8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[No Telepon]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="61" y="79" width="159" height="20" uuid="98a9bb53-7dcd-4d96-96a7-5572b4952d57"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Kode Pelanggan]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="425" y="79" width="235" height="20" uuid="3816d5e1-1eba-4e24-bdde-7ac4aa370b71"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Alamat]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="79" width="61" height="20" uuid="ab1b53a6-10cb-46b6-9192-7e191dbcfc1a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[NO]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="61" y="0" width="159" height="20" uuid="f63a6b03-c0b4-4207-ad23-2350adebc73b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{kd_mekanik}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="220" y="0" width="205" height="20" uuid="10da7932-a083-4444-8757-c46ab83ed3ce"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nm_mekanik}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="425" y="0" width="235" height="20" uuid="130add90-e994-4ed9-b5b1-0c939283b71d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{alamat}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="660" y="0" width="142" height="20" uuid="93b626c6-498f-47e4-b123-c2df81e03162"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{no_telepon}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="61" height="20" uuid="d82d68d6-8f78-4067-8032-2f53c51b7117"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="152" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="670" y="60" width="101" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="185e7373-b964-4f23-94e0-36bc73770b41"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Mengetahui,]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="0" width="800" height="1" uuid="494f9d50-ed23-4a87-9bf3-a437d8d42971"/>
+				<graphicElement>
+					<pen lineWidth="2.25" lineStyle="Double"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="0" y="149" width="802" height="1" uuid="f1bfd240-624c-49e5-a9ac-9d8078334681"/>
+				<graphicElement>
+					<pen lineWidth="2.25" lineStyle="Double"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="638" y="30" width="51" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="76c477bb-4caa-4c73-9b90-ef7e77da884d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Bogor,]]></text>
+			</staticText>
+			<textField pattern="dd MMMMM yyyy">
+				<reportElement x="689" y="30" width="111" height="20" uuid="7f544584-9a7a-43b1-83eb-45e2c4d78bde"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="671" y="129" width="100" height="20" uuid="83a1fa15-2957-4427-bb91-60fec6195d93"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nama}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+</jasperReport>

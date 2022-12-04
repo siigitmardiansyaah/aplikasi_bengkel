@@ -15,6 +15,7 @@ public class Login_m {
     private static String username;
     private static String status;
     private static String email;
+    private static String nama;
 
     public static String getId_login() {
         return id_login;
@@ -47,6 +48,16 @@ public class Login_m {
     public static void setEmail(String email) {
         Login_m.email = email;
     }
+
+    public static String getNama() {
+        return nama;
+    }
+
+    public static void setNama(String nama) {
+        Login_m.nama = nama;
+    }
+    
+    
     
     
     

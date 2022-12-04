@@ -32,7 +32,7 @@ public class DataUser extends javax.swing.JInternalFrame {
     @SuppressWarnings("unchecked")
     
     private void datatable() {
-        Object[] Baris = {"ID Login", "Username","Password", "Email", "Role"};
+        Object[] Baris = {"ID Login", "Username","Password", "Email", "Role","Nama"};
         tabmode = new DefaultTableModel(null, Baris);
         tblmekanik.setModel(tabmode);
         String sql = "select * from login";
@@ -45,7 +45,8 @@ public class DataUser extends javax.swing.JInternalFrame {
                 String password = hasil.getString("password");
                 String email = hasil.getString("email");
                 String status = hasil.getString("status");
-                String[] data = {id,username,password,email,status};
+                String nama = hasil.getString("nama");
+                String[] data = {id,username,password,email,status,nama};
                 tabmode.addRow(data);
             }
         } catch (Exception e) {
@@ -58,26 +59,15 @@ public class DataUser extends javax.swing.JInternalFrame {
         txpassword.setEnabled(false);
         txemail.setEnabled(false);
         cmbxbox.setEnabled(false);
+        txnamaa.setEnabled(false);
     }
     private void aktif() {
         txpassword.setEnabled(true);
         txuser.setEnabled(true);
         txemail.setEnabled(true);
         cmbxbox.setEnabled(true);
+        txnamaa.setEnabled(true);
         txid.requestFocus();
-    }
-    private void aktifkosongcari(){
-        txid.setText("");
-        txpassword.setEnabled(true);
-        txpassword.setEnabled(true);
-        txuser.setEnabled(true);
-        txemail.setEnabled(true);
-        cmbxbox.setEnabled(true);
-        txpassword.setText("");
-        txuser.setText("");
-        cmbxbox.setSelectedItem("Pilih Role");
-        txemail.setText("");
-        update.setEnabled(true);
     }
     
      private void kosong() {
@@ -88,6 +78,7 @@ public class DataUser extends javax.swing.JInternalFrame {
         tambah.setEnabled(true);
         update.setEnabled(true);
         hapus.setEnabled(true);
+        txnamaa.setText("");
     }
      
       private void autoNumber() {
@@ -138,6 +129,8 @@ public class DataUser extends javax.swing.JInternalFrame {
         hapus = new javax.swing.JButton();
         keluar = new javax.swing.JButton();
         batal = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        txnamaa = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblmekanik = new javax.swing.JTable();
@@ -219,6 +212,9 @@ public class DataUser extends javax.swing.JInternalFrame {
             }
         });
 
+        jLabel5.setFont(new java.awt.Font("Serif", 1, 14)); // NOI18N
+        jLabel5.setText("NAMA");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -227,65 +223,72 @@ public class DataUser extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(keluar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(tambah, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(batal, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(hapus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(update, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
                             .addComponent(jLabel1)
                             .addComponent(jLabel2)
                             .addComponent(jLabel6)
-                            .addComponent(STATUS))
+                            .addComponent(STATUS)
+                            .addComponent(jLabel5))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txemail)
-                            .addComponent(txid)
-                            .addComponent(txpassword)
-                            .addComponent(txuser)
-                            .addComponent(cmbxbox, 0, 210, Short.MAX_VALUE))
-                        .addGap(0, 26, Short.MAX_VALUE))
-                    .addComponent(tambah, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(batal, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(hapus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(update, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txnamaa, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(txemail)
+                                .addComponent(txid)
+                                .addComponent(txpassword)
+                                .addComponent(txuser)
+                                .addComponent(cmbxbox, 0, 210, Short.MAX_VALUE)))
+                        .addGap(0, 26, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel1)
-                    .addComponent(txid, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(txuser, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(1, 1, 1)
-                        .addComponent(txpassword, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txid, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txuser, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txpassword, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txnamaa, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
+                .addGap(11, 11, 11)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(txemail, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(STATUS)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(1, 1, 1)
-                        .addComponent(cmbxbox, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tambah)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(update)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(hapus)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(batal)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(keluar)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(6, 6, 6)
+                        .addComponent(STATUS)
+                        .addGap(18, 18, 18)
+                        .addComponent(tambah)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(update)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(hapus)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(batal)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(keluar))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(cmbxbox, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         jPanel2.setBackground(new java.awt.Color(204, 204, 204));
@@ -359,10 +362,10 @@ public class DataUser extends javax.swing.JInternalFrame {
                     .addComponent(txtCari, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCari))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jPanel3.setBackground(new java.awt.Color(204, 204, 204));
@@ -408,11 +411,11 @@ public class DataUser extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, "Kolom Pencarian Tidak Boleh Kosong");
         } else {
         if (tombol.equals("Cari")){
-            Object[] Baris = {"id_login", "Usernama", "Password", "Email", "Status"};
+            Object[] Baris = {"id_login", "Usernama", "Password", "Email", "Status","Nama"};
             tabmode = new DefaultTableModel(null, Baris);
             tblmekanik.setModel(tabmode);
             String sql = "Select * from login where id_login like '%" + txtCari.getText() + "%'" +
-            "or username like '%" + txtCari.getText() + "%'";
+            "or username like '%" + txtCari.getText() + "%' or nama like '%"+txtCari.getText()+"%'";
             try {
                 Statement stat = conn.createStatement();
                 ResultSet hasil = stat.executeQuery(sql);
@@ -422,7 +425,8 @@ public class DataUser extends javax.swing.JInternalFrame {
                     String password = hasil.getString("password");
                     String email = hasil.getString("email");
                     String status = hasil.getString("status");
-                    String[] data = {id,username,password,email,status};
+                    String nama = hasil.getString("nama");
+                    String[] data = {id,username,password,email,status,nama};
                     tabmode.addRow(data);
                     btnCari.setText("Batal");
                     tambah.setEnabled(true);
@@ -478,7 +482,7 @@ public class DataUser extends javax.swing.JInternalFrame {
             if (txuser.getText() == null || txpassword.getText() == null || cmbxbox.getSelectedItem() == "Pilih Role" ) {
                 JOptionPane.showMessageDialog(null, "Kolom Tidak Boleh Kosong");
             } else {
-                String sql = "insert into login values(?,?,?,?,?)";
+                String sql = "insert into login values(?,?,?,?,?,?)";
             try {
                 PreparedStatement stat = conn.prepareStatement(sql);
                 stat.setString(1, txuser.getText());
@@ -486,6 +490,7 @@ public class DataUser extends javax.swing.JInternalFrame {
                 stat.setString(3, txpassword.getText());
                 stat.setString(4, cmbxbox.getSelectedItem().toString());
                 stat.setString(5, txid.getText());
+                stat.setString(6, txnamaa.getText());
                 stat.executeUpdate();
                 JOptionPane.showMessageDialog(null, "Data user Berhasil Disimpan");
                 kosong();
@@ -514,13 +519,14 @@ public class DataUser extends javax.swing.JInternalFrame {
             tambah.setEnabled(false);
             batal.setEnabled(true);
         } else {
-            String sql = "update login set username=?, password=?, email=?, status=? where id_login='"+txid.getText()+"'";
+            String sql = "update login set username=?, password=?, email=?, status=?,nama=? where id_login='"+txid.getText()+"'";
             try {
                 PreparedStatement stat = conn.prepareStatement(sql);
                 stat.setString(1, txuser.getText());
                 stat.setString(2, txpassword.getText());
                 stat.setString(3, txemail.getText());
                 stat.setString(4, cmbxbox.getSelectedItem().toString());
+                stat.setString(5, txnamaa.getText());
                 stat.executeUpdate();
                 JOptionPane.showMessageDialog(null, "Data User berhasil Di Update");
                 
@@ -570,10 +576,12 @@ public class DataUser extends javax.swing.JInternalFrame {
         String c = tabmode.getValueAt(bar, 2).toString();
         String d = tabmode.getValueAt(bar, 3).toString();
         String e = tabmode.getValueAt(bar, 4).toString();
+        String f = tabmode.getValueAt(bar, 5).toString();
         txid.setText(a);
         txuser.setText(b);
         txpassword.setText(c);
         txemail.setText(d);
+        txnamaa.setText(f);
         cmbxbox.setSelectedItem(e);
         update.setEnabled(true);
         update.setText("EDIT");
@@ -623,6 +631,7 @@ public class DataUser extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -634,6 +643,7 @@ public class DataUser extends javax.swing.JInternalFrame {
     private javax.swing.JTable tblmekanik;
     private javax.swing.JTextField txemail;
     private javax.swing.JTextField txid;
+    private javax.swing.JTextField txnamaa;
     private javax.swing.JTextField txpassword;
     private javax.swing.JTextField txtCari;
     private javax.swing.JTextField txuser;
