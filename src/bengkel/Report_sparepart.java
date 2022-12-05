@@ -7,12 +7,21 @@
 package bengkel;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import model.Login_m;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -21,7 +30,7 @@ import javax.swing.table.DefaultTableModel;
 public class Report_sparepart extends javax.swing.JInternalFrame {
 private Connection conn = new Koneksi().connect();
     private DefaultTableModel tabmode;
-        private final SimpleDateFormat smpdtfmt = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    private final SimpleDateFormat smpdtfmt = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
     /**
      * Creates new form Report_pelanggan
@@ -29,31 +38,27 @@ private Connection conn = new Koneksi().connect();
     public Report_sparepart() {
                     ((javax.swing.plaf.basic.BasicInternalFrameUI)getUI()).setNorthPane(null);
         initComponents();
-                    datatable();
     }
     
     private void datatable() {
-    Date dttfrom = dtfrom.getDate();
-    Date dttthru = dtthru.getDate();
-    String tanggal1 = smpdtfmt.format(dttfrom);
-    String tanggal2 = smpdtfmt.format(dttthru);
+    String awal = smpdtfmt.format(dtfrom.getDate());
+    String akhir = smpdtfmt.format(dtthru.getDate());
         Object[] Baris = {"ID SPAREPART","Kode Sparepart", "Nama Sparepart", "Stok Awal","Stok Masuk","Stok Keluar","Stok Akhir"};
         tabmode = new DefaultTableModel(null, Baris);
         tbl_pelanggan1.setModel(tabmode);
         tbl_pelanggan1.getColumnModel().getColumn(0).setWidth(0);        
         tbl_pelanggan1.getColumnModel().getColumn(0).setMinWidth(0);
         tbl_pelanggan1.getColumnModel().getColumn(0).setMaxWidth(0);
-        String sql = "SELECT a.id_sparepart, a.kd_sparepart, a.nm_sparepart" +
-" (select IFNULL(sum(qty),0) from stok where id_sparepart = a.id_sparepart AND DATE_FORMAT(tanggal,'%Y-%m-%d') < '"+dttfrom +"' AND jenis = 'IN') - (select IFNULL(sum(qty),0) from stok where id_sparepart = a.id_sparepart AND DATE_FORMAT(tanggal,'%Y-%m-%d') < '"+dttfrom+"' AND jenis = 'OUT') as stok_awal, " +
-" (select IFNULL(sum(qty),0) from stok where id_sparepart = a.id_sparepart AND DATE_FORMAT(tanggal,'%Y-%m-%d') between  '"+dttfrom+"' AND '"+dttthru+"' AND jenis = 'IN') AS stok_masuk, " +
-" (select IFNULL(sum(qty),0) from stok where id_sparepart = a.id_sparepart AND DATE_FORMAT(tanggal,'%Y-%m-%d') between  '"+dttfrom+"' AND '"+dttthru+"' AND jenis = 'OUT') as stok_keluar, " +
-" ((select IFNULL(sum(qty),0) from stok where id_sparepart = a.id_sparepart AND DATE_FORMAT(tanggal,'%Y-%m-%d') < '"+dttfrom+"' AND jenis = 'IN') - (select IFNULL(sum(qty),0) from stok where id_sparepart = a.id_sparepart AND DATE_FORMAT(tanggal,'%Y-%m-%d') < '"+dttfrom+"' AND jenis = 'OUT')) + " + 
-"(select IFNULL(sum(qty),0) from stok where id_sparepart = a.id_sparepart AND DATE_FORMAT(tanggal,'%Y-%m-%d') between  '"+dttfrom+"' AND '"+dttthru+"' AND jenis = 'IN') - (select IFNULL(sum(qty),0) from stok where id_sparepart = a.id_sparepart AND DATE_FORMAT(tanggal,'%Y-%m-%d') between  '"+dttfrom+"' AND '"+dttthru+"' AND jenis = 'OUT') as stok_akhir" +
-" from sparepart a " +
-" left join stok b on a.id_sparepart = b.id_sparepart " +
-" where a.id_sparepart IN (SELECT id_sparepart from stok where DATE_FORMAT(tanggal,'%Y-%m-%d') between '"+dttfrom+"' AND '"+dttthru+"' AND jenis IN ( 'IN','OUT'))" +
-" GROUP by a.kd_sparepart" +
-" ORDER BY a.kd_sparepart";
+        String sql = "SELECT a.id_sparepart, a.kd_sparepart, a.nm_sparepart,"
+                + "(select IFNULL(sum(qty),0) from stok where id_sparepart = a.id_sparepart AND DATE_FORMAT(tanggal,'%Y-%m-%d') < DATE_FORMAT('"+awal+"','%Y-%m-%d') AND jenis = 'IN') - (select IFNULL(sum(qty),0) from stok where id_sparepart = a.id_sparepart AND DATE_FORMAT(tanggal,'%Y-%m-%d') < DATE_FORMAT('"+awal+"','%Y-%m-%d') AND jenis = 'OUT') as stok_awal, " +
+"(select IFNULL(sum(qty),0) from stok where id_sparepart = a.id_sparepart AND DATE_FORMAT(tanggal,'%Y-%m-%d') between  DATE_FORMAT('"+awal+"','%Y-%m-%d') AND DATE_FORMAT('"+akhir+"','%Y-%m-%d') AND jenis = 'IN') AS stok_masuk, " +
+"(select IFNULL(sum(qty),0) from stok where id_sparepart = a.id_sparepart AND DATE_FORMAT(tanggal,'%Y-%m-%d') between  DATE_FORMAT('"+awal+"','%Y-%m-%d') AND DATE_FORMAT('"+akhir+"','%Y-%m-%d') AND jenis = 'OUT') as stok_keluar, " +
+"((select IFNULL(sum(qty),0) from stok where id_sparepart = a.id_sparepart AND DATE_FORMAT(tanggal,'%Y-%m-%d') < DATE_FORMAT('"+awal+"','%Y-%m-%d') AND jenis = 'IN') - (select IFNULL(sum(qty),0) from stok where id_sparepart = a.id_sparepart AND DATE_FORMAT(tanggal,'%Y-%m-%d') < DATE_FORMAT('"+awal+"','%Y-%m-%d') AND jenis = 'OUT')) + (select IFNULL(sum(qty),0) from stok where id_sparepart = a.id_sparepart AND DATE_FORMAT(tanggal,'%Y-%m-%d') between  DATE_FORMAT('"+awal+"','%Y-%m-%d') AND DATE_FORMAT('"+akhir+"','%Y-%m-%d') AND jenis = 'IN') - (select IFNULL(sum(qty),0) from stok where id_sparepart = a.id_sparepart AND DATE_FORMAT(tanggal,'%Y-%m-%d') between  DATE_FORMAT('"+awal+"','%Y-%m-%d') AND DATE_FORMAT('"+akhir+"','%Y-%m-%d') AND jenis = 'OUT') as stok_akhir " +
+"from sparepart a " +
+"left join stok b on a.id_sparepart = b.id_sparepart " +
+"where a.id_sparepart IN (SELECT id_sparepart from stok where DATE_FORMAT(tanggal,'%Y-%m-%d') between DATE_FORMAT('"+awal+"','%Y-%m-%d') AND DATE_FORMAT('"+akhir+"','%Y-%m-%d') AND jenis IN ( 'IN','OUT'))\n" +
+"GROUP by a.kd_sparepart " +
+"ORDER BY a.kd_sparepart ";
         try {
             Statement stat = conn.createStatement();
             ResultSet hasil = stat.executeQuery(sql);
@@ -65,7 +70,6 @@ private Connection conn = new Koneksi().connect();
                 String stok_masuk = hasil.getString("stok_masuk");
                 String stok_keluar = hasil.getString("stok_keluar");
                 String stok_akhir = hasil.getString("stok_akhir");
-
                 String[] data = {id,kode,nama,stok_awal,stok_masuk,stok_keluar,stok_akhir};
                 tabmode.addRow(data);
             }
@@ -91,8 +95,10 @@ private Connection conn = new Koneksi().connect();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         dtthru = new com.toedter.calendar.JDateChooser();
+        btn_cancel = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(204, 204, 204));
+        setTitle("Report Sparepart");
 
         jLabel1.setBackground(new java.awt.Color(204, 204, 204));
         jLabel1.setFont(new java.awt.Font("Serif", 1, 24)); // NOI18N
@@ -132,44 +138,55 @@ private Connection conn = new Koneksi().connect();
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("S / D");
 
+        btn_cancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/012-undo.png"))); // NOI18N
+        btn_cancel.setText("KEMBALI");
+        btn_cancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_cancelActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1319, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
                         .addComponent(jLabel2)
-                        .addGap(18, 18, 18)
-                        .addComponent(dtfrom, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(dtfrom, javax.swing.GroupLayout.PREFERRED_SIZE, 530, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(24, 24, 24)
                         .addComponent(jLabel3)
                         .addGap(18, 18, 18)
-                        .addComponent(dtthru, javax.swing.GroupLayout.PREFERRED_SIZE, 493, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(dtthru, javax.swing.GroupLayout.PREFERRED_SIZE, 421, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btn_print)))
+                        .addComponent(btn_print)
+                        .addGap(18, 18, 18)
+                        .addComponent(btn_cancel)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(btn_print)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                            .addComponent(jLabel2)
-                            .addGap(1, 1, 1))
-                        .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(dtfrom, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(dtthru, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(42, 42, 42)
+                        .addComponent(jLabel3))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(dtthru, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(btn_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btn_print, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(dtfrom, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 493, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
+                .addGap(28, 28, 28))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -198,11 +215,59 @@ private Connection conn = new Koneksi().connect();
 
     private void btn_printActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_printActionPerformed
         // TODO add your handling code here:
+        if(dtfrom.getDate()== null || dtthru.getDate() == null ) {
+             JOptionPane.showMessageDialog(null, "Tanggal Harus Di Pilih");
+        } else {
         datatable();
+//         CETAK STRUK
+//    diatas adalah pengaturan format penulisan, bisa diubah sesuai keinginan.
+                    Date tanggal1 = dtfrom.getDate();
+                    Date tanggal2 = dtthru.getDate();
+                    String awal = smpdtfmt.format(tanggal1);
+                    String akhir = smpdtfmt.format(tanggal2);
+                       java.sql.Connection con = null;
+                       try {
+                           String jdbcDriver =  "com.mysql.jdbc.Driver";
+                           Class.forName(jdbcDriver);
+                           
+                           String url = "jdbc:mysql://localhost:3306/bengkel";
+                           String user = "root";
+                           String password = "";
+                           
+                           con = DriverManager.getConnection(url,user,password);
+                           Statement stm = con.createStatement();
+
+    try {
+                                 String report= ("C:\\Users\\mardi\\Documents\\"
+                                         + "NetBeansProjects\\aplikasi_bengkel\\src\\"
+                                         + "report_new\\report_sparepart.jrxml");
+                                 HashMap hash = new HashMap();
+                                 hash.put("nama", Login_m.getNama());
+                                 hash.put("dtfrom", awal);
+                                 hash.put("dtthru", akhir);
+
+                                 JasperReport JRpt = JasperCompileManager.compileReport(getClass().getResourceAsStream("/report_new/report_sparepart.jrxml"));
+                                 JasperPrint jasperPrint = JasperFillManager.fillReport(JRpt,hash,con);
+                                 JasperViewer.viewReport(jasperPrint,false);
+                                    } catch (Exception jrreport) {
+                                        JOptionPane.showMessageDialog(null, jrreport);
+                                    }
+                       } catch(Exception au) {
+                            JOptionPane.showMessageDialog(null, au);
+                       }
+        }
+                                
+//                           CETAK STRUK
     }//GEN-LAST:event_btn_printActionPerformed
+
+    private void btn_cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cancelActionPerformed
+        // TODO add your handling code here:
+        dispose();
+    }//GEN-LAST:event_btn_cancelActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_cancel;
     private javax.swing.JButton btn_print;
     private com.toedter.calendar.JDateChooser dtfrom;
     private com.toedter.calendar.JDateChooser dtthru;

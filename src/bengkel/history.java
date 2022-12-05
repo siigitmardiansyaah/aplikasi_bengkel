@@ -40,8 +40,8 @@ public class history extends javax.swing.JInternalFrame {
         Object[] Baris = {"Tanggal","No Faktur", "Nama Pelanggan", "No Polisi", "Keluhan", "Nama Mekanik","Total"};
         tabmode = new DefaultTableModel(null, Baris);
         tbl_history.setModel(tabmode);
-        String sql = "select DATE_FORMAT(a.tanggal,'%d/%m/%Y') as tanggal,a.no_faktur,c.nm_pelanggan,d.nm_pelanggan"
-                + "a.no_polisi,a.keluhan,a.total "
+        String sql = "select DATE_FORMAT(a.tanggal,'%d/%m/%Y') as tanggal,a.no_faktur,c.nm_pelanggan,d.nm_mekanik"
+                + "a.no_polisi,a.keluhan,a.total,b.nama"
                 + "from service_motor a "
                 + "join login b on a.kasir = b.id_login "
                 + "join pelanggan c on a.kd_pelanggan = c.id_pelanggan "
@@ -187,7 +187,7 @@ public class history extends javax.swing.JInternalFrame {
         Object[] Baris = {"Tanggal","No Faktur", "Nama Pelanggan", "No Polisi", "Keluhan", "Nama Mekanik","Total"};
         tabmode = new DefaultTableModel(null, Baris);
         tbl_history.setModel(tabmode);
-        String sql = "select DATE_FORMAT(a.tanggal,'%d/%m/%Y') as tanggal,a.no_faktur,c.nm_pelanggan,d.nm_pelanggan"
+        String sql = "select DATE_FORMAT(a.tanggal,'%d/%m/%Y') as tanggal,a.no_faktur,c.nm_pelanggan,d.nm_mekanik"
                 + "a.no_polisi,a.keluhan,a.total "
                 + "from service_motor a "
                 + "join login b on a.kasir = b.id_login "

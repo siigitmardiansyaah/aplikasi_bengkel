@@ -7,12 +7,21 @@
 package bengkel;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import model.Login_m;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -21,7 +30,7 @@ import javax.swing.table.DefaultTableModel;
 public class Report_transaksi extends javax.swing.JInternalFrame {
 private Connection conn = new Koneksi().connect();
     private DefaultTableModel tabmode;
-        private final SimpleDateFormat smpdtfmt = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+    private final SimpleDateFormat smpdtfmt = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
     /**
      * Creates new form Report_pelanggan
@@ -29,7 +38,6 @@ private Connection conn = new Koneksi().connect();
     public Report_transaksi() {
                     ((javax.swing.plaf.basic.BasicInternalFrameUI)getUI()).setNorthPane(null);
         initComponents();
-                    datatable();
     }
     
     private void datatable() {
@@ -47,18 +55,19 @@ private Connection conn = new Koneksi().connect();
                 + "from service motor a "
                 + "join pelanggan b on a.kd_pelanggan = b.id_pelanggan"
                 + "join login c on a.kasir = c.id_login "
-                + " where DATE_FORMAT(a.tanggal,'%d/%m/%Y') between '"+tanggal1+"' AND '" +tanggal2 + "'"
+                + " where DATE_FORMAT(a.tanggal,'%Y-%m-%d') between DATE_FORMAT('"+tanggal1+"','%Y-%m-%d') AND DATE_FORMAT('" +tanggal2 + "','%Y-%m-%d')"
                 + "order by a.tanggal DESC";
         try {
             Statement stat = conn.createStatement();
             ResultSet hasil = stat.executeQuery(sql);
             while (hasil.next()) {
-                String id = hasil.getString("id_mekanik");
-                String kode = hasil.getString("kd_mekanik");
-                String nama = hasil.getString("nm_mekanik");
-                String alamat = hasil.getString("alamat");
-                String telepon = hasil.getString("no_telepon");
-                String[] data = {id,kode,nama,alamat,telepon};
+                String id = hasil.getString("id_transaksi");
+                String kode = hasil.getString("no_faktur");
+                String tanggal = hasil.getString("tanggal");
+                String alamat = hasil.getString("nm_pelanggan");
+                String nama = hasil.getString("nama");
+                String telepon = hasil.getString("total");
+                String[] data = {id,kode,tanggal,alamat,nama,telepon};
                 tabmode.addRow(data);
             }
         } catch (Exception e) {
@@ -83,6 +92,7 @@ private Connection conn = new Koneksi().connect();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         dtthru = new com.toedter.calendar.JDateChooser();
+        btn_print1 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(204, 204, 204));
 
@@ -124,6 +134,14 @@ private Connection conn = new Koneksi().connect();
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("S / D");
 
+        btn_print1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/012-undo.png"))); // NOI18N
+        btn_print1.setText("KEMBALI");
+        btn_print1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_print1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -132,35 +150,45 @@ private Connection conn = new Koneksi().connect();
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1319, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
+                        .addGap(29, 29, 29)
                         .addComponent(jLabel2)
                         .addGap(18, 18, 18)
-                        .addComponent(dtfrom, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(dtfrom, javax.swing.GroupLayout.PREFERRED_SIZE, 411, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel3)
                         .addGap(18, 18, 18)
-                        .addComponent(dtthru, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btn_print)))
+                        .addComponent(dtthru, javax.swing.GroupLayout.PREFERRED_SIZE, 493, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(44, 44, 44)
+                        .addComponent(btn_print)
+                        .addGap(18, 18, 18)
+                        .addComponent(btn_print1)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(btn_print)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(btn_print, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btn_print1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(dtthru, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(dtfrom, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                             .addComponent(jLabel2)
-                            .addGap(1, 1, 1))
-                        .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(dtfrom, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(dtthru, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
+                            .addGap(24, 24, 24)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addGap(18, 18, 18)))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 493, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -190,12 +218,58 @@ private Connection conn = new Koneksi().connect();
 
     private void btn_printActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_printActionPerformed
         // TODO add your handling code here:
+        if(dtfrom.getDate()== null || dtthru.getDate() == null ) {
+             JOptionPane.showMessageDialog(null, "Tanggal Harus Di Pilih");
+        } else {
         datatable();
+         Date tanggal1 = dtfrom.getDate();
+                    Date tanggal2 = dtthru.getDate();
+                    String awal = smpdtfmt.format(tanggal1);
+                    String akhir = smpdtfmt.format(tanggal2);
+                       java.sql.Connection con = null;
+                       try {
+                           String jdbcDriver =  "com.mysql.jdbc.Driver";
+                           Class.forName(jdbcDriver);
+                           
+                           String url = "jdbc:mysql://localhost:3306/bengkel";
+                           String user = "root";
+                           String password = "";
+                           
+                           con = DriverManager.getConnection(url,user,password);
+                           Statement stm = con.createStatement();
+
+    try {
+                                 String report= ("C:\\Users\\mardi\\Documents\\"
+                                         + "NetBeansProjects\\aplikasi_bengkel\\src\\"
+                                         + "report_new\\report_transaksi.jrxml");
+                                 HashMap hash = new HashMap();
+                                 hash.put("nama", Login_m.getNama());
+                                 hash.put("dtfrom", awal);
+                                 hash.put("dtthru", akhir);
+
+                                 JasperReport JRpt = JasperCompileManager.compileReport(getClass().getResourceAsStream("/report_new/report_transaksi.jrxml"));
+                                 JasperPrint jasperPrint = JasperFillManager.fillReport(JRpt,hash,con);
+                                 JasperViewer.viewReport(jasperPrint,false);
+                                    } catch (Exception jrreport) {
+                                        JOptionPane.showMessageDialog(null, jrreport);
+                                    }
+                       } catch(Exception au) {
+                            JOptionPane.showMessageDialog(null, au);
+                       }
+        }
+                                
+//                           CETAK STRUK
     }//GEN-LAST:event_btn_printActionPerformed
+
+    private void btn_print1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_print1ActionPerformed
+        // TODO add your handling code here:
+        dispose();
+    }//GEN-LAST:event_btn_print1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_print;
+    private javax.swing.JButton btn_print1;
     private com.toedter.calendar.JDateChooser dtfrom;
     private com.toedter.calendar.JDateChooser dtthru;
     private javax.swing.JLabel jLabel1;

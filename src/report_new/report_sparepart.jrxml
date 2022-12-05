@@ -1,51 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="870" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="830" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="387de92d-6d25-4748-bc1e-45efad0a7d49">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="820" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="780" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="387de92d-6d25-4748-bc1e-45efad0a7d49">
 	<property name="ireport.zoom" value="2.143588810000002"/>
-	<property name="ireport.x" value="1028"/>
-	<property name="ireport.y" value="393"/>
+	<property name="ireport.x" value="268"/>
+	<property name="ireport.y" value="409"/>
 	<parameter name="nama" class="java.lang.String"/>
 	<parameter name="dtfrom" class="java.lang.String"/>
 	<parameter name="dtthru" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select DATE_FORMAT(a.tanggal,'%d/%m/%Y') as tanggal,a.no_faktur,c.nm_pelanggan,d.nm_mekanik,a.no_polisi,a.keluhan,a.total,b.nama
-from service_motor a 
-join login b on a.kasir = b.id_login 
-join pelanggan c on a.kd_pelanggan = c.id_pelanggan 
-join mekanik d on a.kd_mekanik = d.id_mekanik
-where DATE_FORMAT(a.tanggal,'%Y-%m-%d') BETWEEN DATE_FORMAT($P{dtfrom},'%Y-%m-%d') AND DATE_FORMAT($P{dtthru},'%Y-%m-%d')
-order by a.no_faktur DESC]]>
+		<![CDATA[SELECT a.id_sparepart, a.kd_sparepart, a.nm_sparepart,(select IFNULL(sum(qty),0) from stok where id_sparepart = a.id_sparepart AND DATE_FORMAT(tanggal,'%Y-%m-%d') < DATE_FORMAT($P{dtfrom},'%Y-%m-%d') AND jenis = 'IN') - (select IFNULL(sum(qty),0) from stok where id_sparepart = a.id_sparepart AND DATE_FORMAT(tanggal,'%Y-%m-%d') < DATE_FORMAT($P{dtfrom},'%Y-%m-%d') AND jenis = 'OUT') as stok_awal,
+(select IFNULL(sum(qty),0) from stok where id_sparepart = a.id_sparepart AND DATE_FORMAT(tanggal,'%Y-%m-%d') between  DATE_FORMAT($P{dtfrom},'%Y-%m-%d') AND DATE_FORMAT($P{dtthru},'%Y-%m-%d') AND jenis = 'IN') AS stok_masuk,
+(select IFNULL(sum(qty),0) from stok where id_sparepart = a.id_sparepart AND DATE_FORMAT(tanggal,'%Y-%m-%d') between  DATE_FORMAT($P{dtfrom},'%Y-%m-%d') AND DATE_FORMAT($P{dtthru},'%Y-%m-%d') AND jenis = 'OUT') as stok_keluar,
+((select IFNULL(sum(qty),0) from stok where id_sparepart = a.id_sparepart AND DATE_FORMAT(tanggal,'%Y-%m-%d') < DATE_FORMAT($P{dtfrom},'%Y-%m-%d') AND jenis = 'IN') - (select IFNULL(sum(qty),0) from stok where id_sparepart = a.id_sparepart AND DATE_FORMAT(tanggal,'%Y-%m-%d') < DATE_FORMAT($P{dtfrom},'%Y-%m-%d') AND jenis = 'OUT')) + (select IFNULL(sum(qty),0) from stok where id_sparepart = a.id_sparepart AND DATE_FORMAT(tanggal,'%Y-%m-%d') between  DATE_FORMAT($P{dtfrom},'%Y-%m-%d') AND DATE_FORMAT($P{dtthru},'%Y-%m-%d') AND jenis = 'IN') - (select IFNULL(sum(qty),0) from stok where id_sparepart = a.id_sparepart AND DATE_FORMAT(tanggal,'%Y-%m-%d') between  DATE_FORMAT($P{dtfrom},'%Y-%m-%d') AND DATE_FORMAT($P{dtthru},'%Y-%m-%d') AND jenis = 'OUT') as stok_akhir
+from sparepart a 
+left join stok b on a.id_sparepart = b.id_sparepart 
+where a.id_sparepart IN (SELECT id_sparepart from stok where DATE_FORMAT(tanggal,'%Y-%m-%d') between DATE_FORMAT($P{dtfrom},'%Y-%m-%d') AND DATE_FORMAT($P{dtthru},'%Y-%m-%d') AND jenis IN ( 'IN','OUT'))
+GROUP by a.kd_sparepart
+ORDER BY a.kd_sparepart]]>
 	</queryString>
-	<field name="tanggal" class="java.lang.String">
+	<field name="id_sparepart" class="java.lang.Integer">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="no_faktur" class="java.lang.String">
+	<field name="kd_sparepart" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="nm_pelanggan" class="java.lang.String">
+	<field name="nm_sparepart" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="nm_mekanik" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="no_polisi" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="keluhan" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="total" class="java.lang.Float">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="nama" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<variable name="total_1" class="java.lang.Float" resetType="Column" calculation="Sum">
-		<variableExpression><![CDATA[$F{total}]]></variableExpression>
-	</variable>
+	<field name="stok_awal" class="java.math.BigDecimal"/>
+	<field name="stok_masuk" class="java.math.BigDecimal"/>
+	<field name="stok_keluar" class="java.math.BigDecimal"/>
+	<field name="stok_akhir" class="java.math.BigDecimal"/>
 	<title>
 		<band height="120" splitType="Stretch">
 			<rectangle>
-				<reportElement x="0" y="0" width="830" height="117" uuid="15c63bc0-dea1-45dd-bd55-99718ef9b835"/>
+				<reportElement x="0" y="0" width="779" height="117" uuid="15c63bc0-dea1-45dd-bd55-99718ef9b835"/>
 				<graphicElement>
 					<pen lineWidth="3.0"/>
 				</graphicElement>
@@ -87,39 +75,39 @@ order by a.no_faktur DESC]]>
 	<columnHeader>
 		<band height="99" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="12" width="830" height="30" uuid="a63b9c59-009e-4065-9a3a-8f36fcce952b"/>
+				<reportElement x="0" y="13" width="779" height="30" uuid="a63b9c59-009e-4065-9a3a-8f36fcce952b"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="16" isBold="true"/>
 				</textElement>
-				<text><![CDATA[REPORT TRANSAKSI SERVICE]]></text>
+				<text><![CDATA[REPORT SPAREPART & STOCK]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="156" y="79" width="183" height="20" uuid="e19eb52e-0d5b-4c62-97a5-56c56c4b4c8b"/>
+				<reportElement x="156" y="79" width="157" height="20" uuid="e19eb52e-0d5b-4c62-97a5-56c56c4b4c8b"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Nama Pelanggan]]></text>
+				<text><![CDATA[Nama Sparepart]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="427" y="79" width="172" height="20" uuid="cb36716e-38dc-43ff-a331-e73aaa2436c8"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Keluhan]]></text>
+				<text><![CDATA[Stok Masuk]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="61" y="79" width="95" height="20" uuid="98a9bb53-7dcd-4d96-96a7-5572b4952d57"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[No Faktur]]></text>
+				<text><![CDATA[Kode Sparepart]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="339" y="79" width="88" height="20" uuid="3816d5e1-1eba-4e24-bdde-7ac4aa370b71"/>
+				<reportElement x="313" y="79" width="114" height="20" uuid="3816d5e1-1eba-4e24-bdde-7ac4aa370b71"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[No Polisi]]></text>
+				<text><![CDATA[Stok Awal]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="79" width="61" height="20" uuid="ab1b53a6-10cb-46b6-9192-7e191dbcfc1a"/>
@@ -136,14 +124,14 @@ order by a.no_faktur DESC]]>
 				<text><![CDATA[Periode	:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="156" y="59" width="25" height="20" uuid="ed762c36-fb8c-44a6-b828-a6d8dbe12e41"/>
+				<reportElement x="166" y="59" width="25" height="20" uuid="ed762c36-fb8c-44a6-b828-a6d8dbe12e41"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12"/>
 				</textElement>
 				<text><![CDATA[-]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy">
-				<reportElement x="183" y="59" width="80" height="20" uuid="26dfd7f9-b357-4e8b-9b02-fb3fbe1fa46c"/>
+				<reportElement x="201" y="59" width="82" height="20" uuid="26dfd7f9-b357-4e8b-9b02-fb3fbe1fa46c"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12"/>
 				</textElement>
@@ -161,21 +149,14 @@ order by a.no_faktur DESC]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Nama Mekanik]]></text>
+				<text><![CDATA[Stok Keluar]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="689" y="79" width="90" height="20" uuid="5b62d472-c98a-49b6-bd3f-f3c8cc86b027"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Nama Kasir]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="779" y="79" width="51" height="20" uuid="931d0aff-7ea1-41a1-84da-5b482a026c76"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Total]]></text>
+				<text><![CDATA[Stok Akhir]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
@@ -184,22 +165,22 @@ order by a.no_faktur DESC]]>
 			<textField>
 				<reportElement x="61" y="0" width="95" height="20" uuid="f63a6b03-c0b4-4207-ad23-2350adebc73b"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{no_faktur}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{kd_sparepart}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="156" y="0" width="183" height="20" uuid="10da7932-a083-4444-8757-c46ab83ed3ce"/>
+				<reportElement x="156" y="0" width="157" height="20" uuid="10da7932-a083-4444-8757-c46ab83ed3ce"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{nm_pelanggan}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{nm_sparepart}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="339" y="0" width="88" height="20" uuid="130add90-e994-4ed9-b5b1-0c939283b71d"/>
+				<reportElement x="313" y="0" width="114" height="20" uuid="130add90-e994-4ed9-b5b1-0c939283b71d"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{no_polisi}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{stok_awal}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="427" y="0" width="172" height="20" uuid="93b626c6-498f-47e4-b123-c2df81e03162"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{keluhan}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{stok_masuk}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="0" y="0" width="61" height="20" uuid="d82d68d6-8f78-4067-8032-2f53c51b7117"/>
@@ -209,76 +190,57 @@ order by a.no_faktur DESC]]>
 			<textField>
 				<reportElement x="599" y="0" width="90" height="20" uuid="6ed1d701-2293-4ef6-9415-43bbc396c0b0"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{nm_mekanik}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{stok_keluar}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="689" y="0" width="90" height="20" uuid="5c9eddac-abab-46e3-b1da-0a0554c3592b"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{nama}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="779" y="0" width="51" height="20" uuid="40245e35-3e15-4e12-ab62-866daa4c0607"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{stok_akhir}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
 	<columnFooter>
 		<band height="152" splitType="Stretch">
 			<staticText>
-				<reportElement mode="Opaque" x="701" y="50" width="101" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="185e7373-b964-4f23-94e0-36bc73770b41"/>
+				<reportElement mode="Opaque" x="668" y="40" width="101" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="185e7373-b964-4f23-94e0-36bc73770b41"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Mengetahui,]]></text>
 			</staticText>
 			<line>
-				<reportElement x="0" y="0" width="830" height="1" uuid="494f9d50-ed23-4a87-9bf3-a437d8d42971"/>
+				<reportElement x="0" y="0" width="779" height="1" uuid="494f9d50-ed23-4a87-9bf3-a437d8d42971"/>
 				<graphicElement>
 					<pen lineWidth="2.25" lineStyle="Double"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement x="0" y="149" width="830" height="1" uuid="f1bfd240-624c-49e5-a9ac-9d8078334681"/>
+				<reportElement x="0" y="149" width="779" height="1" uuid="f1bfd240-624c-49e5-a9ac-9d8078334681"/>
 				<graphicElement>
 					<pen lineWidth="2.25" lineStyle="Double"/>
 				</graphicElement>
 			</line>
 			<staticText>
-				<reportElement mode="Opaque" x="668" y="30" width="51" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="76c477bb-4caa-4c73-9b90-ef7e77da884d"/>
+				<reportElement mode="Opaque" x="605" y="10" width="51" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="76c477bb-4caa-4c73-9b90-ef7e77da884d"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Bogor,]]></text>
 			</staticText>
 			<textField pattern="dd MMMMM yyyy">
-				<reportElement x="719" y="30" width="111" height="20" uuid="7f544584-9a7a-43b1-83eb-45e2c4d78bde"/>
+				<reportElement x="656" y="10" width="113" height="20" uuid="7f544584-9a7a-43b1-83eb-45e2c4d78bde"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="702" y="129" width="100" height="20" uuid="83a1fa15-2957-4427-bb91-60fec6195d93"/>
+				<reportElement x="669" y="129" width="100" height="20" uuid="83a1fa15-2957-4427-bb91-60fec6195d93"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{nama}]]></textFieldExpression>
 			</textField>
-			<textField pattern="¤ #,##0.00">
-				<reportElement x="668" y="0" width="162" height="20" uuid="02f9b714-4201-4f3e-9e5a-0673ab15cdf0"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$V{total_1}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="537" y="1" width="131" height="20" uuid="0847823d-871e-448c-95ba-feae4cb91878"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Total Pendapatan :]]></text>
-			</staticText>
 		</band>
 	</columnFooter>
 </jasperReport>

@@ -238,6 +238,7 @@ public class FormLogin extends javax.swing.JFrame {
                 Login_m.setUsername(username);
                 Login_m.setStatus(status);
                 Login_m.setEmail(email);
+                Login_m.setNama(nama);
                 JOptionPane.showMessageDialog(null,"Selamat Login Berhasil");
                 this.dispose(); 
            //Menuutama adalah nama variabel dari form menu 

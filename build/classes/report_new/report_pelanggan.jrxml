@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="387de92d-6d25-4748-bc1e-45efad0a7d49">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="387de92d-6d25-4748-bc1e-45efad0a7d49">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="69"/>
 	<parameter name="nama" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[SELECT * FROM pelanggan order by  id_pelanggan ASC]]>
@@ -58,12 +58,16 @@
 				</textElement>
 				<text><![CDATA[Telepon: (021) 87929409]]></text>
 			</staticText>
+			<image>
+				<reportElement x="10" y="10" width="228" height="103" uuid="b2eb267f-dc66-4517-aa39-19a975a304d0"/>
+				<imageExpression><![CDATA["C:\\Users\\mardi\\Downloads\\logo.jpg"]]></imageExpression>
+			</image>
 		</band>
 	</title>
 	<columnHeader>
 		<band height="99" splitType="Stretch">
 			<staticText>
-				<reportElement x="356" y="12" width="243" height="30" uuid="a63b9c59-009e-4065-9a3a-8f36fcce952b"/>
+				<reportElement x="0" y="12" width="800" height="30" uuid="a63b9c59-009e-4065-9a3a-8f36fcce952b"/>
 				<textElement textAlignment="Center">
 					<font size="16" isBold="true"/>
 				</textElement>

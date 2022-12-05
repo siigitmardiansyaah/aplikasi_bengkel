@@ -7,9 +7,18 @@
 package bengkel;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.HashMap;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import model.Login_m;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -65,6 +74,7 @@ private Connection conn = new Koneksi().connect();
         btn_print = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbl_pelanggan1 = new javax.swing.JTable();
+        btn_print1 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(204, 204, 204));
 
@@ -79,6 +89,11 @@ private Connection conn = new Koneksi().connect();
 
         btn_print.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/006-printer.png"))); // NOI18N
         btn_print.setText("PRINT");
+        btn_print.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_printActionPerformed(evt);
+            }
+        });
 
         tbl_pelanggan1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -93,6 +108,14 @@ private Connection conn = new Koneksi().connect();
         ));
         jScrollPane1.setViewportView(tbl_pelanggan1);
 
+        btn_print1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/012-undo.png"))); // NOI18N
+        btn_print1.setText("KEMBALI");
+        btn_print1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_print1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -100,19 +123,23 @@ private Connection conn = new Koneksi().connect();
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1330, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btn_print))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1319, Short.MAX_VALUE))
+                        .addComponent(btn_print)
+                        .addGap(18, 18, 18)
+                        .addComponent(btn_print1)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btn_print)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn_print)
+                    .addComponent(btn_print1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 497, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 501, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -140,9 +167,49 @@ private Connection conn = new Koneksi().connect();
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btn_printActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_printActionPerformed
+        // TODO add your handling code here:
+         // CETAK STRUK
+                       java.sql.Connection con = null;
+                       try {
+                           String jdbcDriver =  "com.mysql.jdbc.Driver";
+                           Class.forName(jdbcDriver);
+                           
+                           String url = "jdbc:mysql://localhost:3306/bengkel";
+                           String user = "root";
+                           String password = "";
+                           
+                           con = DriverManager.getConnection(url,user,password);
+                           Statement stm = con.createStatement();
+
+    try {
+                                 String report= ("C:\\Users\\mardi\\Documents\\"
+                                         + "NetBeansProjects\\aplikasi_bengkel\\src\\"
+                                         + "report_new\\report_mekanik.jrxml");
+                                 HashMap hash = new HashMap();
+                                 hash.put("nama", Login_m.getNama());
+                                 JasperReport JRpt = JasperCompileManager.compileReport(getClass().getResourceAsStream("/report_new/report_mekanik.jrxml"));
+                                 JasperPrint jasperPrint = JasperFillManager.fillReport(JRpt,hash,con);
+                                 JasperViewer.viewReport(jasperPrint,false);
+                                    } catch (Exception jrreport) {
+                                        JOptionPane.showMessageDialog(null, jrreport);
+                                    }
+                       } catch(Exception au) {
+                            JOptionPane.showMessageDialog(null, au);
+                       }
+                                
+                          // CETAK STRUK
+    }//GEN-LAST:event_btn_printActionPerformed
+
+    private void btn_print1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_print1ActionPerformed
+        // TODO add your handling code here:
+        dispose();
+    }//GEN-LAST:event_btn_print1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_print;
+    private javax.swing.JButton btn_print1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;

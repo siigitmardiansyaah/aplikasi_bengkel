@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="387de92d-6d25-4748-bc1e-45efad0a7d49">
-	<property name="ireport.zoom" value="1.0"/>
-	<property name="ireport.x" value="241"/>
-	<property name="ireport.y" value="0"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="387de92d-6d25-4748-bc1e-45efad0a7d49">
+	<property name="ireport.zoom" value="1.771561000000001"/>
+	<property name="ireport.x" value="165"/>
+	<property name="ireport.y" value="384"/>
 	<parameter name="nama" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT * FROM mekanik order by  id_mekanik ASC]]>
@@ -25,7 +25,7 @@
 	<title>
 		<band height="120" splitType="Stretch">
 			<rectangle>
-				<reportElement x="0" y="0" width="802" height="117" uuid="15c63bc0-dea1-45dd-bd55-99718ef9b835"/>
+				<reportElement x="-2" y="0" width="802" height="117" uuid="15c63bc0-dea1-45dd-bd55-99718ef9b835"/>
 				<graphicElement>
 					<pen lineWidth="3.0"/>
 				</graphicElement>
@@ -58,12 +58,16 @@
 				</textElement>
 				<text><![CDATA[Telepon: (021) 87929409]]></text>
 			</staticText>
+			<image>
+				<reportElement x="0" y="10" width="228" height="103" uuid="94c8955c-000b-44b9-8d61-ddaf01e30603"/>
+				<imageExpression><![CDATA["C:\\Users\\mardi\\Downloads\\logo.jpg"]]></imageExpression>
+			</image>
 		</band>
 	</title>
 	<columnHeader>
 		<band height="99" splitType="Stretch">
 			<staticText>
-				<reportElement x="356" y="12" width="243" height="30" uuid="a63b9c59-009e-4065-9a3a-8f36fcce952b"/>
+				<reportElement x="0" y="21" width="800" height="30" uuid="a63b9c59-009e-4065-9a3a-8f36fcce952b"/>
 				<textElement textAlignment="Center">
 					<font size="16" isBold="true"/>
 				</textElement>
