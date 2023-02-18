@@ -823,7 +823,7 @@ public class transaksi extends javax.swing.JInternalFrame {
             String noPolisi = txnopol.getText();
             String kd_mekanik = kd_meka.getText();
             String keluhan = txkeluhan.getText();
-            String kd_user = Login_m.getId_login();
+            String kd_user = Login_m.getNama();
             Date date= new Date();
             long time = date.getTime();
             Timestamp strDate = new Timestamp(time);

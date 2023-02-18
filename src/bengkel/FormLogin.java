@@ -41,10 +41,9 @@ public class FormLogin extends javax.swing.JFrame {
 
         jPanel4.setBackground(new java.awt.Color(204, 204, 204));
 
-        btlogin.setBackground(new java.awt.Color(153, 0, 0));
+        btlogin.setBackground(new java.awt.Color(255, 255, 255));
         btlogin.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        btlogin.setForeground(new java.awt.Color(255, 255, 255));
-        btlogin.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8_key_22px.png"))); // NOI18N
+        btlogin.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/login.png"))); // NOI18N
         btlogin.setText("LOGIN");
         btlogin.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         btlogin.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -61,10 +60,9 @@ public class FormLogin extends javax.swing.JFrame {
             }
         });
 
-        btreset.setBackground(new java.awt.Color(153, 0, 0));
+        btreset.setBackground(new java.awt.Color(204, 204, 204));
         btreset.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        btreset.setForeground(new java.awt.Color(255, 255, 255));
-        btreset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8_synchronize_22px.png"))); // NOI18N
+        btreset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/reset.png"))); // NOI18N
         btreset.setText("RESET");
         btreset.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         btreset.addActionListener(new java.awt.event.ActionListener() {
@@ -139,13 +137,14 @@ public class FormLogin extends javax.swing.JFrame {
                         .addGap(73, 73, 73))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 368, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(41, 41, 41)
-                        .addComponent(btlogin, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btreset, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 368, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addGap(23, 23, 23)
+                                .addComponent(btlogin, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btreset, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 12, Short.MAX_VALUE)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -167,8 +166,8 @@ public class FormLogin extends javax.swing.JFrame {
                 .addComponent(txtPass, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(52, 52, 52)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btreset, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btlogin, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btreset, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btlogin, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(21, Short.MAX_VALUE))
         );
 

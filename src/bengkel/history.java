@@ -37,6 +37,7 @@ public class history extends javax.swing.JInternalFrame {
     
     private void datatable() {
         String id_login = Login_m.getId_login();
+        String kasir = Login_m.getNama();
         Object[] Baris = {"Tanggal","No Faktur", "Nama Pelanggan", "No Polisi", "Keluhan", "Nama Mekanik","Total"};
         tabmode = new DefaultTableModel(null, Baris);
         tbl_history.setModel(tabmode);
@@ -46,7 +47,7 @@ public class history extends javax.swing.JInternalFrame {
                 + "join login b on a.kasir = b.id_login "
                 + "join pelanggan c on a.kd_pelanggan = c.id_pelanggan "
                 + "join mekanik d on a.kd_mekanik = d.id_mekanik"
-                + "where a.kasir = '"+id_login+"' AND DATE_FORMAT(a.tanggal,'%d/%m/%Y') = '"+tanggal+"' "
+                + "where a.kasir = '"+kasir+"' AND DATE_FORMAT(a.tanggal,'%d/%m/%Y') = '"+tanggal+"' "
                 + "order by a.no_faktur DESC";
         try {
             Statement stat = conn.createStatement();
